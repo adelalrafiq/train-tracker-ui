@@ -1,0 +1,112 @@
+<!-- liveboard.html -->
+
+<div class="bg-black text-white min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <div class="relative flex items-center justify-between px-10 py-6 border-b border-gray-700">
+
+        <!-- Station Name -->
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-yellow-400">
+            {{ selectedStation }}
+        </h1>
+
+        <!-- Center Search (ABSOLUTE CENTER) -->
+        <div class="absolute left-1/2 transform -translate-x-1/2">
+            <div class="relative">
+
+                <input [ngModel]="stationName" (ngModelChange)="onInputChange($event)"
+                    (keydown.enter)="selectStation(suggestions[0])" (keydown.tab)="selectStation(suggestions[0])"
+                    placeholder="Enter station..." class="px-4 py-2 w-56 rounded-full 
+                           bg-black text-white placeholder-gray-400
+                           border-2 border-yellow-400
+                           focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400
+                           transition-all duration-200" />
+
+                <!-- Dropdown -->
+                <div *ngIf="showDropdown"
+                    class="absolute left-0 mt-2 w-56 bg-white text-black rounded-xl shadow-lg z-50 overflow-hidden">
+
+                    <div *ngFor="let s of suggestions" (click)="selectStation(s)"
+                        class="px-4 py-2 hover:bg-yellow-100 cursor-pointer transition">
+
+                        {{ s.name }}
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Clock -->
+        <div class="text-2xl   ">
+            <span>
+                {{ currentTime | date:'HH' }}
+                <span *ngIf="showColon">:</span>
+                <span *ngIf="!showColon" class="opacity-0">:</span>
+                {{ currentTime | date:'mm' }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Status -->
+    <div>
+        <div *ngIf="errorMessage" class="text-red-500 px-10 pt-2">
+            ⚠ {{ errorMessage }}
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="flex-1 px-10 py-6">
+        <table class="w-full text-left text-xl">
+            <thead class="text-yellow-400 border-b border-gray-600">
+                <tr>
+                    <th>Bestemming</th>
+                    <th>Tijd</th>
+                    <th>Spoor</th>
+                    <th>Trein</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr *ngFor="let row of rows" class="border-b border-gray-800 hover:bg-gray-900">
+
+                    <td class="font-semibold">
+                        {{ row.directionName }}
+                    </td>
+
+                    <td>
+                        {{ row.departureTime | date:'HH:mm' }}
+                    </td>
+
+                    <td>
+                        {{ row.platform || '-' }}
+                    </td>
+
+                    <td>
+                        {{ row.vehicleInfoShortname }}
+                    </td>
+
+                    <td>
+                        @if (row.delayMinutes > 0) {
+                        <span class="text-red-500">
+                            +{{ row.delayMinutes }} min
+                        </span>
+                        } @else {
+                        <span class="text-green-400">
+                            On time
+                        </span>
+                        }
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Map -->
+<div>
+    <app-map [latitude]="latitude" [longitude]="longitude"></app-map>
+</div>

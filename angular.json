@@ -25,11 +25,16 @@
               }
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/mapbox-gl/dist/mapbox-gl.css"
             ]
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                "replace": "src/environments/environment.ts",
+                "with": "src/environments/environment.prod.ts"
+              ],
               "budgets": [
                 {
                   "type": "initial",
