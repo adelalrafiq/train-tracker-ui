@@ -18,7 +18,7 @@ A modern real-time train departure board web application inspired by real Europe
 
 ## 📸 Preview
 
-*(Add screenshot here later)*
+![Screenshot of homepage](images/liveboard.png)
 
 ---
 
