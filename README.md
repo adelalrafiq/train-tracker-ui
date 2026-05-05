@@ -1,59 +1,158 @@
-# TrainTrackerUi
+# 🚆 TrainTracker UI
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.8.
+Frontend application for the TrainTracker system.
+It simulates a real train station departure board with live data, autocomplete search, and an interactive map.
 
-## Development server
+---
 
-To start a local development server, run:
+## 🌍 Live Demo
 
-```bash
+🔗 https://train-tracker-ui-fdfc.vercel.app/liveboard
+
+---
+
+## ✨ Features
+
+* 🚉 Live departure board
+* 🔄 Auto refresh every 30 seconds
+* 🔍 Station search with autocomplete
+* 🗺️ Interactive map (Mapbox)
+* ⏰ Real-time clock
+* 📱 Responsive design (mobile + tablet + desktop)
+
+---
+
+## 🛠️ Tech Stack
+
+* Angular
+* Tailwind CSS
+* Mapbox GL JS
+
+---
+
+## 📂 Project Structure
+
+```id="f1"
+src/
+ ├── app/
+ │   ├── pages/
+ │   ├── services/
+ │   └── components/
+ ├── environments/
+ └── assets/
+```
+
+---
+
+## ⚙️ Setup
+
+### 1. Install dependencies
+
+```bash id="f2"
+npm install
+```
+
+---
+
+### 2. Run locally
+
+```bash id="f3"
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+App runs on:
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```id="f4"
+http://localhost:4200
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
 
-```bash
-ng generate --help
+## 🔑 Environment Configuration
+
+Create:
+
+```id="f5"
+src/environments/environment.ts
 ```
 
-## Building
+```ts id="f6"
+export const environment = {
+  api: {
+    baseUrl: 'https://traintracker-1.onrender.com/api/liveboard/sint-Niklaas'
+  },
+  mapboxToken: 'YOUR_MAPBOX_TOKEN'
+};
+```
 
-To build the project run:
+---
 
-```bash
+## 🔗 API Integration
+
+The app connects to:
+
+```id="f7"
+https://traintracker-1.onrender.com/api
+```
+
+---
+
+## 🧠 How It Works
+
+* User types a station name
+* Autocomplete suggests stations
+* Selected station triggers API call
+* Data updates every 30 seconds
+* Map updates location dynamically
+
+---
+
+## 🚀 Build
+
+```bash id="f8"
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Output:
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
+```id="f9"
+dist/train-tracker-ui
 ```
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+## 🌐 Deployment
 
-```bash
-ng e2e
-```
+Deployed using:
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+* Vercel
 
-## Additional Resources
+---
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## ⚠️ Notes
+
+* Backend may sleep (Render free tier)
+* First request may take a few seconds
+* Mapbox token is required
+
+---
+
+## 🔮 Future Improvements
+
+* ⚡ Real-time updates (SignalR)
+* 🧠 Smart caching
+* 📱 PWA support
+* 🎨 UI animations
+
+---
+
+## 🔗 Related
+
+Backend API:
+https://traintracker-1.onrender.com
+
+---
+
+## 👨‍💻 Author
+
+Adel Al-Rafiq 🚀
