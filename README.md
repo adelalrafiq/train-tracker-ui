@@ -1,13 +1,24 @@
 # 🚆 TrainTracker UI
 
-Frontend application for the TrainTracker system.
-It simulates a real train station departure board with live data, autocomplete search, and an interactive map.
+A modern real-time train departure board web application inspired by real European station displays.
+
+---
+
+![Angular](https://img.shields.io/badge/Angular-21-red)
+![Status](https://img.shields.io/badge/status-live-success)
+![License](https://img.shields.io/badge/license-MIT-blue)
 
 ---
 
 ## 🌍 Live Demo
 
 🔗 https://train-tracker-ui-fdfc.vercel.app/liveboard
+
+---
+
+## 📸 Preview
+
+*(Add screenshot here later)*
 
 ---
 
@@ -18,7 +29,7 @@ It simulates a real train station departure board with live data, autocomplete s
 * 🔍 Station search with autocomplete
 * 🗺️ Interactive map (Mapbox)
 * ⏰ Real-time clock
-* 📱 Responsive design (mobile + tablet + desktop)
+* 📱 Responsive design (mobile, tablet, desktop)
 
 ---
 
@@ -32,38 +43,46 @@ It simulates a real train station departure board with live data, autocomplete s
 
 ## 📂 Project Structure
 
-```id="f1"
+```
 src/
  ├── app/
+ │   ├── models/
  │   ├── pages/
- │   ├── services/
- │   └── components/
- ├── environments/
- └── assets/
+ │   └── services/
+ └── environments/
 ```
+
+---
+
+## ▶️ How to Use
+
+1. Type a station name (e.g. **Gen**)
+2. Select from autocomplete
+3. View live departures
+4. Watch the map update automatically
 
 ---
 
 ## ⚙️ Setup
 
-### 1. Install dependencies
+### Install dependencies
 
-```bash id="f2"
+```bash
 npm install
 ```
 
 ---
 
-### 2. Run locally
+### Run locally
 
-```bash id="f3"
+```bash
 ng serve
 ```
 
 App runs on:
 
-```id="f4"
-http://localhost:4200
+```
+http://localhost:4200/liveboard
 ```
 
 ---
@@ -72,14 +91,16 @@ http://localhost:4200
 
 Create:
 
-```id="f5"
+```
 src/environments/environment.ts
 ```
 
-```ts id="f6"
+```ts
 export const environment = {
   api: {
-    baseUrl: 'https://traintracker-1.onrender.com/api/liveboard/sint-Niklaas'
+    baseUrl: 'https://traintracker-1.onrender.com/api',
+    liveboard: '/liveboard',
+    stations: '/stations'
   },
   mapboxToken: 'YOUR_MAPBOX_TOKEN'
 };
@@ -89,33 +110,81 @@ export const environment = {
 
 ## 🔗 API Integration
 
-The app connects to:
+### Base URL
 
-```id="f7"
 https://traintracker-1.onrender.com/api
+
+---
+
+### 🚉 Liveboard
+
+**GET** `/liveboard/{station}`
+
+Example:
+
+```
+https://traintracker-1.onrender.com/api/liveboard/Sint-Niklaas
+```
+
+Response:
+
+```json
+{
+  "stationName": "Sint-Niklaas",
+  "latitude": 51.171472,
+  "longitude": 4.142966,
+  "rows": [
+    {
+      "directionName": "Antwerpen-Centraal",
+      "departureTime": "2026-05-04T08:00:00+00:00",
+      "platform": "4",
+      "vehicleInfoShortname": "IC 730",
+      "delayMinutes": 0
+    }
+  ]
+}
 ```
 
 ---
 
-## 🧠 How It Works
+### 🔍 Stations Search
 
-* User types a station name
-* Autocomplete suggests stations
-* Selected station triggers API call
-* Data updates every 30 seconds
-* Map updates location dynamically
+**GET** `/stations?query={text}`
+
+Example:
+
+```
+https://traintracker-1.onrender.com/api/stations?query=Gen
+```
+
+Response:
+
+```json
+[
+  { "name": "Gent-Sint-Pieters" },
+  { "name": "Genk" }
+]
+```
+
+---
+
+### 📄 API Documentation (Swagger)
+
+Interactive API documentation available at:
+
+🔗 https://traintracker-1.onrender.com/swagger
 
 ---
 
 ## 🚀 Build
 
-```bash id="f8"
+```bash
 ng build
 ```
 
 Output:
 
-```id="f9"
+```
 dist/train-tracker-ui
 ```
 
@@ -131,7 +200,7 @@ Deployed using:
 
 ## ⚠️ Notes
 
-* Backend may sleep (Render free tier)
+* Backend may sleep (free tier on Render)
 * First request may take a few seconds
 * Mapbox token is required
 
@@ -139,7 +208,7 @@ Deployed using:
 
 ## 🔮 Future Improvements
 
-* ⚡ Real-time updates (SignalR)
+* ⚡ Real-time updates using SignalR
 * 🧠 Smart caching
 * 📱 PWA support
 * 🎨 UI animations
@@ -151,8 +220,12 @@ Deployed using:
 Backend API:
 https://traintracker-1.onrender.com
 
+Backend repository:
+https://github.com/adelalrafiq/TrainTracker
+
 ---
 
 ## 👨‍💻 Author
 
-Adel Al-Rafiq 🚀
+**Adel Al-Rafiq** 🚀
+Full Stack Developer  
