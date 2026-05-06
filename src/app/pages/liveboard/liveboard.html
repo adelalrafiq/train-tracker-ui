@@ -74,6 +74,9 @@
 
                     <td class="font-semibold">
                         {{ row.directionName }}
+                        <span *ngIf="row.stops.length > 0 || 0" class="text-gray-400 text-sm">
+                            via {{ row.stops.join(', ') }}
+                        </span>
                     </td>
 
                     <td>

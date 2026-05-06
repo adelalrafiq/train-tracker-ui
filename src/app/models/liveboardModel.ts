@@ -5,6 +5,7 @@ export interface LiveboardRow {
     vehicleInfoShortname: string;
     delayMinutes: number;
     status: number;
+    stops: string[];
 }
 
 export interface LiveboardResponse {
