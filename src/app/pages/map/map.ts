@@ -34,9 +34,9 @@ export class Map implements AfterViewInit, OnChanges, OnDestroy {
 
     this.map = new mapboxgl.Map({
       container: this.mapContainer.nativeElement,
-      style: 'mapbox://styles/mapbox/dark-v11',
-      center: [4.14, 51.17],
-      zoom: 9
+      style: 'mapbox://styles/mapbox/streets-v12',
+      center: [this.longitude ?? 4.14, this.latitude ?? 51.17],
+      zoom: 10
     });
 
     this.marker = new mapboxgl.Marker()

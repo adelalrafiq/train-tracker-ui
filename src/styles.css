@@ -7,3 +7,23 @@ body {
     margin: 0;
     padding: 0;
 }
+
+/* Hide scrollbar but keep scrolling */
+.kiosk-scroll {
+    overflow-y: auto;
+
+    /* Firefox */
+    scrollbar-width: none;
+
+    /* IE/Edge legacy */
+    -ms-overflow-style: none;
+}
+
+/* Chrome / Safari / Edge */
+.kiosk-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.kiosk-scroll {
+    mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+}

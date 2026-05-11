@@ -1,24 +1,17 @@
 <!-- liveboard.html -->
 
-<div class="bg-black text-white min-h-screen flex flex-col">
+<div class="bg-[#004BAC] text-white min-h-screen flex flex-col">
 
     <!-- HEADER -->
-    <header class="relative flex items-center justify-between px-10 py-6 border-b border-gray-700">
-
-        <!-- Station -->
-        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-yellow-400">
-            {{ selectedStation }}
-        </h1>
-
+    <header class="relative flex items-center justify-between px-10 py-6 ">
         <!-- Search -->
         <div class="absolute left-1/2 -translate-x-1/2">
 
             <div class="relative">
-
                 <input [ngModel]="stationName" (ngModelChange)="onInputChange($event)"
                     (keydown.enter)="selectStation(suggestions[0])" (keydown.tab)="selectStation(suggestions[0])"
-                    placeholder="Enter station..." class="w-56 px-4 py-2 rounded-full
-                           bg-black text-white placeholder-gray-400
+                    placeholder="Zoek een station..." class="w-56 px-4 py-2 rounded-full
+                           text-white placeholder-white-400
                            border-2 border-yellow-400
                            focus:outline-none focus:ring-2
                            focus:ring-yellow-400
@@ -56,13 +49,13 @@
     }
 
     <!-- CONTENT -->
-    <div class="flex-1 px-10 py-6">
+    <div class="flex-1 px-10 py-0">
 
         <!-- Top Info Bar -->
-        <div class="mb-6 flex items-center justify-between">
+        <div class="mb-0 flex items-center justify-between">
 
             <!-- Current Time -->
-            <div class="text-3xl font-semibold">
+            <div class="text-2xl font-semibold">
 
                 {{ currentTime | date:'HH' }}
 
@@ -77,144 +70,140 @@
             </div>
 
             <!-- Center -->
-            <div class="text-2xl text-gray-300 font-medium">
-                Vertrek
+            <div class="text-3xl text-white-300 font-medium">
+                Vertrek van {{selectedStation }}
             </div>
 
             <!-- Logo -->
             <div>
-                <img src="assets/train-logo.png" alt="Train logo" class="h-12 w-auto object-contain" />
+                <img src="images/logo_B.png" alt="Train logo" class="h-12 w-auto object-contain" />
             </div>
 
         </div>
 
         <!-- Table -->
-        <table class="w-full text-left">
-            <tbody>
-                @for (row of rows; track row.vehicleInfoShortname; let first = $first) {
+        <div class="max-h-[42vh] overflow-y-auto kiosk-scroll">
+            <table class="w-full text-left">
+                <tbody>
+                    @for (row of rows; track row.vehicleInfoShortname; let first = $first) {
 
-                <tr class="border-b border-gray-800 hover:bg-gray-900 transition" [class.border-t]="first"
-                    [class.border-gray-700]="first">
+                    <tr class="border-b border-white-800 hover:bg-white-900 transition" [class.border-t]="first"
+                        [class.border-white-700]="first">
 
 
-                    <!-- Departure time[ngSwitch]="" -->
-                    <td class="py-0 text-lg">
-                        <span>
-                            {{ row.departureTime | date:'HH:mm' }}
-                        </span>
-                        <!-- delay -->
-                        @if (row.delayMinutes > 0) {
-
-                        <p class="text-red-500 text-sm">
-                            +{{ row.delayMinutes }} min
-                        </p>
-
-                        }
-                    </td>
-
-                    <!-- Status -->
-                    <td class="w-20 py-0">
-                        <div class="min-h-[24px] flex items-center">
-
-                            @if (row.displayStatus === 'geannuleerd') {
-
-                            <span class="bg-red-500 text-white font-semibold px-2 py-1 rounded">
-                                Rijdt niet
+                        <!-- Departure time[ngSwitch]="" -->
+                        <td class="w-20 text-2xl font-semibold p-2">
+                            <span>
+                                {{ row.departureTime | date:'HH:mm' }}
                             </span>
+                            <!-- delay -->
+                            @if (row.delayMinutes > 0) {
 
-                            } @else if (row.displayStatus === 'aan perron') {
-
-                            <span class="text-white font-semibold px-2 py-1 rounded">
-                                aan perron
-                            </span>
-
-                            } @else if (row.displayStatus === 'komt aan') {
-
-                            <span class="text-white font-semibold">
-                                komt aan
-                            </span>
+                            <p class="text-white bg-red-500  text-sm">
+                                +{{ row.delayMinutes }} min
+                            </p>
 
                             }
+                        </td>
 
-                        </div>
-                    </td>
+                        <!-- Status -->
+                        <td class="w-25 py-0">
+                            <div class=" items-center">
 
-                    <!-- Destination + Stops -->
-                    <td class="py-0">
+                                @if (row.displayStatus === 'geannuleerd') {
 
-                        <div class="flex items-center gap-2 overflow-hidden">
+                                <span class="bg-red-500 text-white font-semibold px-2 py-1 rounded">
+                                    Rijdt niet
+                                </span>
 
-                            <!-- direction ثابت -->
-                            <span class="shrink-0 font-semibold text-yellow-400">
-                                {{ row.directionName }}
-                            </span>
+                                } @else if (row.displayStatus === 'aan perron') {
+                                <span class="text-white font-semibold">
+                                    aan perron
+                                </span>
+                                } @else if (row.displayStatus === 'komt aan') {
+                                <span class="text-white font-semibold">
+                                    komt aan
+                                </span>
+                                }
+                            </div>
+                        </td>
 
-                            <!-- via scrolling -->
-                            @if (row.stops.length > 0) {
+                        <!-- Destination + Stops -->
+                        <td class="py-0">
 
-                            <div class="overflow-hidden whitespace-nowrap flex-1" #viaContainer>
+                            <div class="flex items-center gap-2 overflow-hidden">
 
-                                <div class="inline-block via-scroll text-sm text-gray-400" #viaText
-                                    [class.animate-via]="overflowMap[$index]">
+                                <!-- direction -->
+                                <span class="shrink-0 font-semibold text-yellow-400">
+                                    {{ row.directionName }}
+                                </span>
 
-                                    via
+                                <!-- via scrolling -->
+                                @if (row.stops.length > 0) {
 
-                                    @for (stop of row.stops; track stop.station; let last = $last) {
+                                <div class="overflow-hidden whitespace-nowrap flex-1" #viaContainer>
 
-                                    <span>
+                                    <div class="inline-block via-scroll text-sm text-white-400" #viaText
+                                        [class.animate-via]="overflowMap[$index]">
 
-                                        {{ stop.station }}
+                                        via
 
-                                        @if (!last) {
-                                        ,
+                                        @for (stop of row.stops; track stop.station; let last = $last) {
+
+                                        <span>
+
+                                            {{ stop.station }}
+
+                                            @if (!last) {
+                                            ,
+                                            }
+
+                                        </span>
+
                                         }
 
-                                    </span>
-
-                                    }
+                                    </div>
 
                                 </div>
 
+                                }
+
                             </div>
+
+                        </td>
+
+                        <!-- Train -->
+                        <td class="w-25 py-0">
+                            {{ row.vehicleInfoShortname }}
+                        </td>
+
+                        <!-- Platform -->
+                        <td class="py-0">
+
+                            @if (row.platform) {
+
+                            <span class="font-semibold">
+                                {{ row.platform }}
+                            </span>
+
+                            } @else {
+
+                            <span class="text-white-500">
+                                -
+                            </span>
 
                             }
 
-                        </div>
+                        </td>
 
-                    </td>
+                    </tr>
 
-                    <!-- Train -->
-                    <td class="py-0">
-                        {{ row.vehicleInfoShortname }}
-                    </td>
+                    }
 
-                    <!-- Platform -->
-                    <td class="py-0">
+                </tbody>
 
-                        @if (row.platform) {
-
-                        <span class="font-semibold">
-                            {{ row.platform }}
-                        </span>
-
-                        } @else {
-
-                        <span class="text-gray-500">
-                            -
-                        </span>
-
-                        }
-
-                    </td>
-
-                </tr>
-
-                }
-
-            </tbody>
-
-        </table>
-
+            </table>
+        </div>
     </div>
 
 </div>
