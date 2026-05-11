@@ -2,114 +2,223 @@
 
 <div class="bg-black text-white min-h-screen flex flex-col">
 
-    <!-- Header -->
-    <div class="relative flex items-center justify-between px-10 py-6 border-b border-gray-700">
+    <!-- HEADER -->
+    <header class="relative flex items-center justify-between px-10 py-6 border-b border-gray-700">
 
-        <!-- Station Name -->
+        <!-- Station -->
         <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-yellow-400">
             {{ selectedStation }}
         </h1>
 
-        <!-- Center Search (ABSOLUTE CENTER) -->
-        <div class="absolute left-1/2 transform -translate-x-1/2">
+        <!-- Search -->
+        <div class="absolute left-1/2 -translate-x-1/2">
+
             <div class="relative">
 
                 <input [ngModel]="stationName" (ngModelChange)="onInputChange($event)"
                     (keydown.enter)="selectStation(suggestions[0])" (keydown.tab)="selectStation(suggestions[0])"
-                    placeholder="Enter station..." class="px-4 py-2 w-56 rounded-full 
+                    placeholder="Enter station..." class="w-56 px-4 py-2 rounded-full
                            bg-black text-white placeholder-gray-400
                            border-2 border-yellow-400
-                           focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400
+                           focus:outline-none focus:ring-2
+                           focus:ring-yellow-400
                            transition-all duration-200" />
 
-                <!-- Dropdown -->
-                <div *ngIf="showDropdown"
-                    class="absolute left-0 mt-2 w-56 bg-white text-black rounded-xl shadow-lg z-50 overflow-hidden">
+                @if (showDropdown) {
 
-                    <div *ngFor="let s of suggestions" (click)="selectStation(s)"
-                        class="px-4 py-2 hover:bg-yellow-100 cursor-pointer transition">
+                <div class="absolute left-0 mt-2 w-56 overflow-hidden rounded-xl bg-white text-black shadow-lg z-50">
+
+                    @for (s of suggestions; track s.name) {
+
+                    <div (click)="selectStation(s)" class="cursor-pointer px-4 py-2 hover:bg-yellow-100 transition">
 
                         {{ s.name }}
 
                     </div>
+                    }
 
                 </div>
+                }
 
             </div>
+
         </div>
 
-        <!-- Clock -->
-        <div class="text-2xl   ">
-            <span>
-                {{ currentTime | date:'HH' }}
-                <span *ngIf="showColon">:</span>
-                <span *ngIf="!showColon" class="opacity-0">:</span>
-                {{ currentTime | date:'mm' }}
-            </span>
-        </div>
+    </header>
+
+    <!-- ERROR -->
+    @if (errorMessage) {
+
+    <div class="px-10 pt-3 text-red-500">
+        ⚠ {{ errorMessage }}
     </div>
 
-    <!-- Status -->
-    <div>
-        <div *ngIf="errorMessage" class="text-red-500 px-10 pt-2">
-            ⚠ {{ errorMessage }}
-        </div>
-    </div>
+    }
 
-    <!-- Table -->
+    <!-- CONTENT -->
     <div class="flex-1 px-10 py-6">
-        <table class="w-full text-left text-xl">
-            <thead class="text-yellow-400 border-b border-gray-600">
-                <tr>
-                    <th>Bestemming</th>
-                    <th>Tijd</th>
-                    <th>Spoor</th>
-                    <th>Trein</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
 
+        <!-- Top Info Bar -->
+        <div class="mb-6 flex items-center justify-between">
+
+            <!-- Current Time -->
+            <div class="text-3xl font-semibold">
+
+                {{ currentTime | date:'HH' }}
+
+                @if (showColon) {
+                :
+                } @else {
+                <span class="opacity-0">:</span>
+                }
+
+                {{ currentTime | date:'mm' }}
+
+            </div>
+
+            <!-- Center -->
+            <div class="text-2xl text-gray-300 font-medium">
+                Vertrek
+            </div>
+
+            <!-- Logo -->
+            <div>
+                <img src="assets/train-logo.png" alt="Train logo" class="h-12 w-auto object-contain" />
+            </div>
+
+        </div>
+
+        <!-- Table -->
+        <table class="w-full text-left">
             <tbody>
-                <tr *ngFor="let row of rows" class="border-b border-gray-800 hover:bg-gray-900">
+                @for (row of rows; track row.vehicleInfoShortname; let first = $first) {
 
-                    <td class="font-semibold">
-                        {{ row.directionName }}
-                        <span *ngIf="row.stops.length > 0 || 0" class="text-gray-400 text-sm">
-                            via {{ row.stops.join(', ') }}
+                <tr class="border-b border-gray-800 hover:bg-gray-900 transition" [class.border-t]="first"
+                    [class.border-gray-700]="first">
+
+
+                    <!-- Departure time[ngSwitch]="" -->
+                    <td class="py-0 text-lg">
+                        <span>
+                            {{ row.departureTime | date:'HH:mm' }}
                         </span>
-                    </td>
-
-                    <td>
-                        {{ row.departureTime | date:'HH:mm' }}
-                    </td>
-
-                    <td>
-                        {{ row.platform || '-' }}
-                    </td>
-
-                    <td>
-                        {{ row.vehicleInfoShortname }}
-                    </td>
-
-                    <td>
+                        <!-- delay -->
                         @if (row.delayMinutes > 0) {
-                        <span class="text-red-500">
+
+                        <p class="text-red-500 text-sm">
                             +{{ row.delayMinutes }} min
-                        </span>
-                        } @else {
-                        <span class="text-green-400">
-                            On time
-                        </span>
+                        </p>
+
                         }
                     </td>
 
+                    <!-- Status -->
+                    <td class="w-20 py-0">
+                        <div class="min-h-[24px] flex items-center">
+
+                            @if (row.displayStatus === 'geannuleerd') {
+
+                            <span class="bg-red-500 text-white font-semibold px-2 py-1 rounded">
+                                Rijdt niet
+                            </span>
+
+                            } @else if (row.displayStatus === 'aan perron') {
+
+                            <span class="text-white font-semibold px-2 py-1 rounded">
+                                aan perron
+                            </span>
+
+                            } @else if (row.displayStatus === 'komt aan') {
+
+                            <span class="text-white font-semibold">
+                                komt aan
+                            </span>
+
+                            }
+
+                        </div>
+                    </td>
+
+                    <!-- Destination + Stops -->
+                    <td class="py-0">
+
+                        <div class="flex items-center gap-2 overflow-hidden">
+
+                            <!-- direction ثابت -->
+                            <span class="shrink-0 font-semibold text-yellow-400">
+                                {{ row.directionName }}
+                            </span>
+
+                            <!-- via scrolling -->
+                            @if (row.stops.length > 0) {
+
+                            <div class="overflow-hidden whitespace-nowrap flex-1" #viaContainer>
+
+                                <div class="inline-block via-scroll text-sm text-gray-400" #viaText
+                                    [class.animate-via]="overflowMap[$index]">
+
+                                    via
+
+                                    @for (stop of row.stops; track stop.station; let last = $last) {
+
+                                    <span>
+
+                                        {{ stop.station }}
+
+                                        @if (!last) {
+                                        ,
+                                        }
+
+                                    </span>
+
+                                    }
+
+                                </div>
+
+                            </div>
+
+                            }
+
+                        </div>
+
+                    </td>
+
+                    <!-- Train -->
+                    <td class="py-0">
+                        {{ row.vehicleInfoShortname }}
+                    </td>
+
+                    <!-- Platform -->
+                    <td class="py-0">
+
+                        @if (row.platform) {
+
+                        <span class="font-semibold">
+                            {{ row.platform }}
+                        </span>
+
+                        } @else {
+
+                        <span class="text-gray-500">
+                            -
+                        </span>
+
+                        }
+
+                    </td>
+
                 </tr>
+
+                }
+
             </tbody>
+
         </table>
+
     </div>
+
 </div>
 
-<!-- Map -->
-<div>
-    <app-map [latitude]="latitude" [longitude]="longitude"></app-map>
-</div>
+<!-- MAP -->
+<app-map [latitude]="latitude" [longitude]="longitude">
+</app-map>

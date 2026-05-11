@@ -1,8 +1,12 @@
 import {
+  AfterViewInit,
   Component,
   OnInit,
   ChangeDetectorRef,
-  OnDestroy
+  OnDestroy,
+  ViewChildren,
+  QueryList,
+  ElementRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -16,7 +20,7 @@ import { LiveboardRow, StationDto } from '../../models/liveboardModel';
   templateUrl: './liveboard.html',
   styleUrl: './liveboard.css',
 })
-export class Liveboard implements OnInit, OnDestroy {
+export class Liveboard implements OnInit, AfterViewInit, OnDestroy {
   suggestions: StationDto[] = [];
   showDropdown = false;
   currentTime = new Date();
@@ -29,7 +33,18 @@ export class Liveboard implements OnInit, OnDestroy {
   loading = false;
   isSmallScreen = false;
   showColon = true;
-  private timer!: any;
+  overflowMap: boolean[] = [];
+  private fetchTimer!: any;
+
+  private clockTimer!: any;
+
+  private colonTimer!: any;
+
+  @ViewChildren('viaContainer')
+  viaContainers!: QueryList<ElementRef>;
+
+  @ViewChildren('viaText')
+  viaTexts!: QueryList<ElementRef>;
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -38,44 +53,65 @@ export class Liveboard implements OnInit, OnDestroy {
 
   ngOnInit() {
     const savedStation = localStorage.getItem('lastStation') || 'sint-niklaas';
+    this.selectedStation = savedStation;
+
     this.checkScreen();
 
+    this.fetchData();
+
+    // refresh data
+    this.fetchTimer = setInterval(() => {
+      this.fetchData();
+    }, 30000);
+
+    // current clock
+    this.clockTimer = setInterval(() => {
+      this.currentTime = new Date();
+    }, 60000);
     if (savedStation) {
       this.selectedStation = savedStation;
     }
-    this.fetchData();
+
+    // blinking colon
+    this.colonTimer = setInterval(() => {
+
+      this.showColon = !this.showColon;
+
+      this.cdr.markForCheck();
+
+    }, 1000);
+
+    // responsive
     window.addEventListener('resize', () => {
       this.checkScreen();
     });
-    // setInterval(() => {
-    //   this.currentTime = new Date();
-    //   if (this.isSmallScreen) {
-    //     this.showColon = !this.showColon;
-    //   } else {
-    //     this.showColon = true;
-    //   }
-    //   this.cdr.markForCheck();
-    // }, 1000);
-
-    setInterval(() => {
-      this.currentTime = new Date();
-    }, 60000);
-
-    // وميض النقطتين كل ثانية
-    setInterval(() => {
-      this.showColon = !this.showColon;
-      this.cdr.markForCheck();
-    }, 1000);
-
-    this.timer = setInterval(() => {
-      this.fetchData();
-    }, 30000);
   }
 
+  // After view init
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.calculateOverflow();
+    });
+  }
+
+  // Overflow
+  calculateOverflow(): void {
+    this.overflowMap = [];
+    this.viaContainers.forEach((containerRef, index) => {
+      const containerWidth = containerRef.nativeElement.offsetWidth;
+      const textWidth = this.viaTexts.get(index)?.nativeElement.scrollWidth || 0;
+      this.overflowMap[index] = textWidth > containerWidth;
+    });
+    this.cdr.markForCheck();
+  }
+
+  // Screen size
   checkScreen() {
     this.isSmallScreen = window.innerWidth < 768;
   }
-  async onInputChange(value: string) {
+
+  // Search
+  async onInputChange(value: string): Promise<void> {
     this.stationName = value;
 
     if (value.length < 1) {
@@ -86,9 +122,6 @@ export class Liveboard implements OnInit, OnDestroy {
 
     try {
       const result = await this.liveboardService.searchStations(value);
-
-      console.log("Suggestions:", result);
-
       this.suggestions = result;
       this.showDropdown = true;
 
@@ -100,16 +133,16 @@ export class Liveboard implements OnInit, OnDestroy {
 
     this.cdr.markForCheck();
   }
-  async fetchData() {
+
+  // Fetch data
+  async fetchData(): Promise<void> {
     if (!this.selectedStation) {
-      console.warn("No station selected");
       return;
     }
     this.loading = true;
     this.errorMessage = null;
 
     try {
-      console.log("Fetching for:", this.selectedStation);
       const data = await this.liveboardService.getLiveboard(this.selectedStation);
 
       this.rows = data?.rows.map((r: any) => ({
@@ -118,6 +151,11 @@ export class Liveboard implements OnInit, OnDestroy {
       }));
       this.latitude = data.latitude;
       this.longitude = data.longitude;
+
+      // recalc overflow
+      setTimeout(() => {
+        this.calculateOverflow();
+      });
 
     } catch (error) {
       console.error("Fetch error:", error);
@@ -128,19 +166,34 @@ export class Liveboard implements OnInit, OnDestroy {
       this.cdr.markForCheck();
     }
   }
-  selectStation(station: any) {
-    this.selectedStation = station.name;
-    console.log("Selected:", this.selectedStation);
 
+  // Select station
+  selectStation(station: StationDto): void {
+    this.selectedStation = station.name;
     this.stationName = '';
     this.showDropdown = false;
     localStorage.setItem('lastStation', station.name);
-    setTimeout(() => {
-      this.fetchData();
-    });
+    this.fetchData();
   }
-  ngOnDestroy() {
-    clearInterval(this.timer);
+
+  // Cleanup
+  ngOnDestroy(): void {
+    clearInterval(this.fetchTimer);
+    clearInterval(this.clockTimer);
+    clearInterval(this.colonTimer);
+  }
+
+  // Status class
+  getStatusClass(status: string): string {
+    switch (status) {
+      case 'geannuleerd':
+        return 'text-red-500 font-semibold';
+      case 'aan perron':
+      case 'komt aan':
+        return 'text-white font-semibold';
+      default:
+        return '';
+    }
   }
 }
 

@@ -1,11 +1,12 @@
 export interface LiveboardRow {
     directionName: string;
     departureTime: string;
+    displayStatus: string;
     platform: string;
     vehicleInfoShortname: string;
     delayMinutes: number;
     status: number;
-    stops: string[];
+    stops: StopDto[];
 }
 
 export interface LiveboardResponse {
@@ -17,4 +18,9 @@ export interface LiveboardResponse {
 
 export interface StationDto {
     name: string;
+}
+
+export interface StopDto {
+    station: string;
+    status: string;
 }

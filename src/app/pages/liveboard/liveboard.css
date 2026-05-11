@@ -1,0 +1,37 @@
+.via-wrapper {
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+}
+
+.via-scroll {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+/* animation only when overflow exists */
+.animate-via {
+
+    animation: via-scroll-animation 10s linear infinite;
+
+}
+
+/* pause at start and end */
+@keyframes via-scroll-animation {
+
+    0% {
+        transform: translateX(0);
+    }
+
+    30% {
+        transform: translateX(0);
+    }
+
+    70% {
+        transform: translateX(-50%);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}

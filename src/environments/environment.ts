@@ -1,7 +1,7 @@
 export const environment = {
     production: false,
     api: {
-        baseUrl: 'https://traintracker-1.onrender.com/api',
+        baseUrl: 'http://localhost:5000/api',
         liveboard: '/liveboard',
         stations: '/stations',
         connections: '/connections'
