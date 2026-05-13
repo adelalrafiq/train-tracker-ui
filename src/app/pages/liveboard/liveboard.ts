@@ -7,22 +7,29 @@ import {
   ViewChildren,
   QueryList,
   ElementRef,
+  ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 import { Map } from '../map/map';
 import { LiveboardService } from '../../services/liveboardService';
 import { LiveboardRow, StationDto } from '../../models/liveboardModel';
-
+import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { MatInputModule } from '@angular/material/input';
 @Component({
   selector: 'app-liveboard',
-  imports: [CommonModule, FormsModule, Map],
+  imports: [CommonModule, FormsModule, MatInputModule, Map, MatAutocompleteModule, MatFormFieldModule, ReactiveFormsModule],
   templateUrl: './liveboard.html',
   styleUrl: './liveboard.css',
 })
 export class Liveboard implements OnInit, AfterViewInit, OnDestroy {
-  suggestions: StationDto[] = [];
-  showDropdown = false;
+  myControl = new FormControl<string | StationDto>('');
+  filteredOptions!: Observable<StationDto[]>;
   currentTime = new Date();
   selectedStation: string | null = null;
   stationName = '';
@@ -45,7 +52,8 @@ export class Liveboard implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChildren('viaText')
   viaTexts!: QueryList<ElementRef>;
-
+  @ViewChild(MatAutocompleteTrigger)
+  autocomplete!: MatAutocompleteTrigger;
   constructor(
     private cdr: ChangeDetectorRef,
     private liveboardService: LiveboardService
@@ -54,7 +62,11 @@ export class Liveboard implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     const savedStation = localStorage.getItem('lastStation') || 'sint-niklaas';
     this.selectedStation = savedStation;
-
+    this.filteredOptions = this.myControl.valueChanges.pipe(
+      startWith(''),
+      map(value => typeof value === 'string' ? value : value?.name || ''),
+      switchMap(value => this.searchStations(value))
+    );
     this.checkScreen();
 
     this.fetchData();
@@ -87,6 +99,45 @@ export class Liveboard implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  handleAutocompleteKeydown(event: KeyboardEvent): void {
+
+    if (event.key !== 'Tab') {
+      return;
+    }
+
+    if (!this.autocomplete.activeOption) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const selected =
+      this.autocomplete.activeOption.value;
+
+    this.selectStation(selected);
+  }
+
+  searchStations(value: string): Observable<StationDto[]> {
+
+    if (!value || value.length < 1) {
+      return of([]);
+    }
+
+    return new Observable(observer => {
+
+      this.liveboardService.searchStations(value)
+        .then(result => {
+          observer.next(result);
+          observer.complete();
+        })
+        .catch(() => {
+          observer.next([]);
+          observer.complete();
+        });
+
+    });
+  }
+
   // After view init
   ngAfterViewInit(): void {
     setTimeout(() => {
@@ -108,30 +159,6 @@ export class Liveboard implements OnInit, AfterViewInit, OnDestroy {
   // Screen size
   checkScreen() {
     this.isSmallScreen = window.innerWidth < 768;
-  }
-
-  // Search
-  async onInputChange(value: string): Promise<void> {
-    this.stationName = value;
-
-    if (value.length < 1) {
-      this.suggestions = [];
-      this.showDropdown = false;
-      return;
-    }
-
-    try {
-      const result = await this.liveboardService.searchStations(value);
-      this.suggestions = result;
-      this.showDropdown = true;
-
-    } catch (err) {
-      console.error(err);
-      this.suggestions = [];
-      this.showDropdown = false;
-    }
-
-    this.cdr.markForCheck();
   }
 
   // Fetch data
@@ -168,11 +195,11 @@ export class Liveboard implements OnInit, AfterViewInit, OnDestroy {
   }
 
   // Select station
-  selectStation(station: StationDto): void {
-    this.selectedStation = station.name;
-    this.stationName = '';
-    this.showDropdown = false;
-    localStorage.setItem('lastStation', station.name);
+  selectStation(station: StationDto | string): void {
+    const name = typeof station === 'string' ? station : station.name;
+    this.selectedStation = name;
+    localStorage.setItem('lastStation', name);
+    this.myControl.setValue('');
     this.fetchData();
   }
 

@@ -1,42 +1,20 @@
 <!-- liveboard.html -->
 
-<div class="bg-[#004BAC] text-white min-h-screen flex flex-col">
+<div class="bg-[#004BAC] text-white min-h-screen flex flex-col ">
 
     <!-- HEADER -->
-    <header class="relative flex items-center justify-between px-10 py-6 ">
-        <!-- Search -->
-        <div class="absolute left-1/2 -translate-x-1/2">
+    <header class="relative flex items-center justify-center px-10 mt-6 z-50">
+        <mat-form-field appearance="fill" class="w-60 custom-round">
+            <input matInput type="text" placeholder="Zoek een station..." [formControl]="myControl"
+                [matAutocomplete]="auto" (keydown)="handleAutocompleteKeydown($event)">
+            <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption
+                (optionSelected)="selectStation($event.option.value)">
 
-            <div class="relative">
-                <input [ngModel]="stationName" (ngModelChange)="onInputChange($event)"
-                    (keydown.enter)="selectStation(suggestions[0])" (keydown.tab)="selectStation(suggestions[0])"
-                    placeholder="Zoek een station..." class="w-56 px-4 py-2 rounded-full
-                           text-white placeholder-white-400
-                           border-2 border-yellow-400
-                           focus:outline-none focus:ring-2
-                           focus:ring-yellow-400
-                           transition-all duration-200" />
-
-                @if (showDropdown) {
-
-                <div class="absolute left-0 mt-2 w-56 overflow-hidden rounded-xl bg-white text-black shadow-lg z-50">
-
-                    @for (s of suggestions; track s.name) {
-
-                    <div (click)="selectStation(s)" class="cursor-pointer px-4 py-2 hover:bg-yellow-100 transition">
-
-                        {{ s.name }}
-
-                    </div>
-                    }
-
-                </div>
-                }
-
-            </div>
-
-        </div>
-
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option.name">
+                    {{ option.name || option }}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
     </header>
 
     <!-- ERROR -->
@@ -82,8 +60,8 @@
         </div>
 
         <!-- Table -->
-        <div class="max-h-[42vh] overflow-y-auto kiosk-scroll">
-            <table class="w-full text-left">
+        <div class="relative z-0 max-h-[35vh] overflow-y-auto kiosk-scroll ">
+            <table class="w-full text-left mb-5">
                 <tbody>
                     @for (row of rows; track row.vehicleInfoShortname; let first = $first) {
 
