@@ -10,7 +10,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { Map } from '../map/map';
@@ -21,9 +21,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { MatInputModule } from '@angular/material/input';
+
 @Component({
   selector: 'app-liveboard',
-  imports: [CommonModule, FormsModule, MatInputModule, Map, MatAutocompleteModule, MatFormFieldModule, ReactiveFormsModule],
+  imports: [CommonModule, MatInputModule, Map, MatAutocompleteModule, MatFormFieldModule, ReactiveFormsModule],
   templateUrl: './liveboard.html',
   styleUrl: './liveboard.css',
 })
