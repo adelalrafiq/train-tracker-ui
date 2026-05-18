@@ -12,7 +12,7 @@ A modern real-time train departure board web application inspired by real Europe
 
 ## 🌍 Live Demo
 
-🔗 https://train-tracker-ui-fdfc.vercel.app/liveboard
+🔗 https://train-tracker-ui-rust.vercel.app/liveboard
 
 ---
 
