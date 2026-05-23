@@ -1,0 +1,217 @@
+<div class=" p-6 h-full flex flex-col gap-6 overflow-hidden relative">
+    <!-- Search Panel -->
+    <div class="rounded-3xl bg-white p-6 shadow-lg border border-gray-100 relative z-10 flex flex-col">
+        <h1 class="hidden mb-6 md:flex items-center gap-2 text-2xl font-bold text-gray-800">
+            <mat-icon class="!text-[#003082]">route</mat-icon>
+            Zoek Verbindingen
+
+            <!-- ROUTE HINT -->
+            @if ((selectedFrom$ | async) && (selectedTo$ | async)) {
+            <div class="flex1 items-center gap-2 rounded-2xl bg-blue-50 px-4 py-3 text-sm text-blue-800">
+
+                <mat-icon class="!h-4 !w-4 !text-base">train</mat-icon>
+
+                {{ selectedFrom$ | async }}
+
+                <mat-icon class="!h-4 !w-4 !text-base">
+                    arrow_forward
+                </mat-icon>
+
+                {{ selectedTo$ | async }}
+            </div>
+            }
+        </h1>
+        <div class="space-y-4">
+            <div class="flex flex-col md:flex-row items-start">
+
+                <!-- FROM -->
+                <div class="relative flex-1">
+                    <app-autocomplete class="flex-1" label="Van" icon="trip_origin" placeholder="Vertrekstation"
+                        [initialValue]="(selectedFrom$ | async) || ''" (stationSelected)="setFromStation($event)">
+                    </app-autocomplete>
+                    <input #fromInput matInput hidden>
+                </div>
+
+                <!-- Arrow -->
+                <div class="hidden md:flex items-center justify-center pt-2">
+                    <mat-icon class="!h-7 !w-7 !text-2xl !text-gray-400">
+                        arrow_forward
+                    </mat-icon>
+                </div>
+
+                <!-- TO -->
+                <div class="relative flex-1">
+                    <app-autocomplete class="flex-1" label="Naar" icon="place" placeholder="Aankomststation"
+                        [initialValue]="(selectedTo$ | async) || ''" (stationSelected)="setToStation($event)">
+                    </app-autocomplete>
+                    <input #toInput matInput hidden>
+                </div>
+
+                <!-- SEARCH BUTTON -->
+                <button mat-flat-button class="!h-14 !rounded-2xl !bg-[#003082] !px-6 !text-white"
+                    [disabled]="!(selectedFrom$ | async) || !(selectedTo$ | async)" (click)="search()">
+
+                    <mat-icon>search</mat-icon>
+                    Zoeken
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABLE OVER MAP (ONLY SCROLL AREA) -->
+    <div class="flex-1 max-h-[17vh] md:max-h-[23vh] overflow-y-auto">
+
+        <!-- RESULTS -->
+        @if ((connections$ | async)?.length) {
+
+        @for (conn of (connections$ | async); track conn) {
+
+        <div class="rounded-3xl border mb-4 bg-white p-6 shadow">
+
+            <!-- HEADER -->
+            <div class="flex  gap-4 flex-row items-center justify-between">
+
+                <!-- <div class="flex items-center gap-6"> -->
+
+                <!-- Departure -->
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-gray-900">
+                        {{ conn.departureTime | date:'HH:mm' }}
+                    </div>
+
+                    <div class="text-sm text-gray-500">
+                        Vertrek
+                    </div>
+                    <!-- Perron -->
+                    <div class="text-xs text-gray-400 mt-1">
+                        Perron {{ conn.departurePlatform }}
+                    </div>
+                </div>
+
+                <!-- Duration -->
+                <div class="flex items-center gap-2 text-sm text-gray-500">
+                    <div class="h-px w-8 bg-gray-200"></div>
+
+                    <mat-icon class="!h-[14px] !w-[14px] !text-[14px]">
+                        schedule
+                    </mat-icon>
+
+                    {{ formatDuration(conn.duration) }}
+
+                    <div class="h-px w-8 bg-gray-200"></div>
+                </div>
+
+                <!-- Arrival -->
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-gray-900">
+                        {{ conn.arrivalTime | date:'HH:mm' }}
+                    </div>
+
+                    <div class="text-sm text-gray-500">
+                        Aankomst
+                    </div>
+                    <!-- Perron -->
+                    <div class="text-xs text-gray-400 mt-1">
+                        Perron {{ conn.arrivalPlatform }}
+                    </div>
+                </div>
+                <!-- </div> -->
+
+                <!-- Badge -->
+                <!-- <span class="rounded-full px-4 py-2 text-sm font-semibold" [ngClass]="
+                        conn.transfers === 0
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-orange-100 text-orange-700'
+                    ">
+
+                    {{
+                    conn.transfers === 0
+                    ? 'Direct'
+                    : (conn.transfers + ' overstap' + (conn.transfers > 1 ? 'pen' : ''))
+                    }}
+                </span> -->
+            </div>
+
+            <!-- <mat-divider class="my-5"></mat-divider> -->
+
+            <!-- TRAINS -->
+            <div class="space-y-4">
+
+                @for (train of conn.trains; track train; let idx = $index) {
+
+                @if (idx > 0) {
+                <div class="flex items-center rounded-xl bg-gray-50 px-3 py-2 text-sm text-gray-600">
+
+                    <mat-icon class="!h-3 !w-3 !text-xs">
+                        swap_horiz
+                    </mat-icon>
+
+                    <span class="ml-2">
+                        Overstap in
+                        <strong class="ml-1">{{ train.from }}</strong>
+                    </span>
+                </div>
+                }
+
+                <!-- Segment -->
+                <div
+                    class="flex flex-col gap-4 rounded-2xl border border-gray-100 p-4 lg:flex-row lg:items-center lg:justify-between">
+
+                    <div class="flex items-center gap-3">
+
+                        <span class="rounded-lg bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-700">
+                            {{ train.type }}
+                        </span>
+
+                        <span class="font-medium text-gray-700">
+                            {{ train.number }}
+                        </span>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2 text-sm">
+
+                        <strong>{{ train.departure }}</strong>
+
+                        <span class="text-gray-400">
+                            {{ train.from }}
+                        </span>
+
+                        <mat-icon class="!h-[14px] !w-[14px] !text-[14px] !text-gray-300">
+                            arrow_forward
+                        </mat-icon>
+
+                        <strong>{{ train.arrival }}</strong>
+
+                        <span class="text-gray-400">
+                            {{ train.to }}
+                        </span>
+
+                        <span class="rounded-lg bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
+                            {{ train.platform }}
+                        </span>
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+        }
+        } @else {
+
+        <!-- EMPTY STATE -->
+        <div class="rounded-3xl bg-white p-6 shadow">
+            @if (loading$ | async) {
+            <mat-spinner diameter="40"></mat-spinner>
+            } @else {
+            <p class="text-gray-500">Selecteer een route</p>
+            }
+        </div>
+        }
+
+    </div>
+
+</div>
+<!-- MAP BACKGROUND (FULL SCREEN) -->
+
+<app-map class="rounded-3xl h-full w-full" [center]="mapCenter" [zoom]="mapZoom" [markers]="mapMarkers"
+    [line]="mapLine">
+</app-map>

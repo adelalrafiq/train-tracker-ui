@@ -1,0 +1,23 @@
+   <div class="navbar">
+      <a routerLink="/" class="brand">
+        <div class="brand-icon">
+          <mat-icon>train</mat-icon>
+        </div>
+        NMBS
+      </a>
+      <span class="spacer"></span>
+      <nav class="nav-links">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
+           mat-button class="nav-link">
+          <mat-icon>home</mat-icon> Home
+        </a>
+        <a routerLink="/liveboard" routerLinkActive="active"
+           mat-button class="nav-link">
+          <mat-icon>schedule</mat-icon> Liveboard
+        </a>
+        <a routerLink="/connections" routerLinkActive="active"
+           mat-button class="nav-link">
+          <mat-icon>alt_route</mat-icon> Verbindingen
+        </a>
+      </nav>
+    </div>

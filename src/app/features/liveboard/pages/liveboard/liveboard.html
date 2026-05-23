@@ -4,17 +4,8 @@
 
     <!-- HEADER -->
     <header class="relative flex items-center justify-center px-10 mt-6 z-50">
-        <mat-form-field appearance="fill" class="w-60 custom-round">
-            <input matInput type="text" placeholder="Zoek een station..." [formControl]="myControl"
-                [matAutocomplete]="auto" (keydown)="handleAutocompleteKeydown($event)">
-            <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption
-                (optionSelected)="selectStation($event.option.value)">
-
-                <mat-option *ngFor="let option of filteredOptions | async" [value]="option.name">
-                    {{ option.name || option }}
-                </mat-option>
-            </mat-autocomplete>
-        </mat-form-field>
+        <app-autocomplete icon="search" placeholder="Zoek een station..." (stationSelected)="selectStation($event)">
+        </app-autocomplete>
     </header>
 
     <!-- ERROR -->
@@ -60,16 +51,13 @@
         </div>
 
         <!-- Table -->
-        <div class="relative z-0 max-h-[35vh] overflow-y-auto kiosk-scroll ">
+        <div class="relative z-0 max-h-[28vh] overflow-y-auto scroll ">
             <table class="w-full text-left mb-5">
                 <tbody>
                     @for (row of rows; track row.vehicleInfoShortname; let first = $first) {
 
                     <tr class="border-b border-white-800 hover:bg-white-900 transition" [class.border-t]="first"
                         [class.border-white-700]="first">
-
-
-                        <!-- Departure time[ngSwitch]="" -->
                         <td class="w-20 text-2xl font-semibold p-2">
                             <span>
                                 {{ row.departureTime | date:'HH:mm' }}
@@ -187,5 +175,5 @@
 </div>
 
 <!-- MAP -->
-<app-map [latitude]="latitude" [longitude]="longitude">
+<app-map [latitude]="latitude" [longitude]="longitude" [stationName]="stationName">
 </app-map>

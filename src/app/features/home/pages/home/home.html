@@ -1,0 +1,41 @@
+<div class="page">
+      <div class="hero">
+        <div class="hero-icon">
+          <mat-icon style="font-size:40px;width:40px;height:40px;">train</mat-icon>
+        </div>
+        <h1>Belgische Treinen</h1>
+        <p class="subtitle">Bekijk actuele vertrektijden en plan uw reis door België</p>
+      </div>
+
+      <div class="cards">
+        <a routerLink="/liveboard" class="card">
+          <div class="card-icon blue">
+            <mat-icon>schedule</mat-icon>
+          </div>
+          <h2>Liveboard</h2>
+          <p>Bekijk actuele vertrekken en aankomsten voor elk Belgisch station. Real-time vertraginginformatie, vernieuwd elke 30 seconden.</p>
+          <span class="link blue">
+            Ga naar Liveboard <mat-icon style="font-size:18px;width:18px;height:18px;">arrow_forward</mat-icon>
+          </span>
+        </a>
+
+        <a routerLink="/connections" class="card">
+          <div class="card-icon amber">
+            <mat-icon>alt_route</mat-icon>
+          </div>
+          <h2>Verbindingen</h2>
+          <p>Zoek de beste verbinding tussen twee stations met overstap-informatie en een interactieve routekaart.</p>
+          <span class="link amber">
+            Zoek een verbinding <mat-icon style="font-size:18px;width:18px;height:18px;">arrow_forward</mat-icon>
+          </span>
+        </a>
+      </div>
+
+      <div class="footer">
+        <p>
+          Data is gesimuleerd voor demonstratie. Koppel de
+          <a href="https://www.irail.be" target="_blank">iRail API</a>
+          voor echte NMBS-data.
+        </p>
+      </div>
+    </div>

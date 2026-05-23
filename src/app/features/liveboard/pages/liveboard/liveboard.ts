@@ -9,28 +9,29 @@ import {
   ElementRef,
   ViewChild,
 } from '@angular/core';
+import { Autocomplete } from '../../../../shared/components/autocomplete/autocomplete';
 import { CommonModule } from '@angular/common';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
-import { Map } from '../map/map';
+// import { FormControl, ReactiveFormsModule } from '@angular/forms';
+// import { Observable } from 'rxjs';
+// import { map, startWith } from 'rxjs/operators';
+import { Map } from '../../components/map/map';
 import { LiveboardService } from '../../services/liveboardService';
 import { LiveboardRow, StationDto } from '../../models/liveboardModel';
-import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { switchMap } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { MatInputModule } from '@angular/material/input';
+// import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
+// import { MatFormFieldModule } from '@angular/material/form-field';
+// import { switchMap } from 'rxjs/operators';
+// import { of } from 'rxjs';
+// import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-liveboard',
-  imports: [CommonModule, MatInputModule, Map, MatAutocompleteModule, MatFormFieldModule, ReactiveFormsModule],
+  imports: [CommonModule, Autocomplete, Map],
   templateUrl: './liveboard.html',
   styleUrl: './liveboard.css',
 })
 export class Liveboard implements OnInit, AfterViewInit, OnDestroy {
-  myControl = new FormControl<string | StationDto>('');
-  filteredOptions!: Observable<StationDto[]>;
+  // myControl = new FormControl<string | StationDto>('');
+  // filteredOptions!: Observable<StationDto[]>;
   currentTime = new Date();
   selectedStation: string | null = null;
   stationName = '';
@@ -53,8 +54,8 @@ export class Liveboard implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChildren('viaText')
   viaTexts!: QueryList<ElementRef>;
-  @ViewChild(MatAutocompleteTrigger)
-  autocomplete!: MatAutocompleteTrigger;
+  // @ViewChild(MatAutocompleteTrigger)
+  // autocomplete!: MatAutocompleteTrigger;
   constructor(
     private cdr: ChangeDetectorRef,
     private liveboardService: LiveboardService
@@ -63,11 +64,11 @@ export class Liveboard implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     const savedStation = localStorage.getItem('lastStation') || 'sint-niklaas';
     this.selectedStation = savedStation;
-    this.filteredOptions = this.myControl.valueChanges.pipe(
-      startWith(''),
-      map(value => typeof value === 'string' ? value : value?.name || ''),
-      switchMap(value => this.searchStations(value))
-    );
+    // this.filteredOptions = this.myControl.valueChanges.pipe(
+    //   startWith(''),
+    //   map(value => typeof value === 'string' ? value : value?.name || ''),
+    //   switchMap(value => this.searchStations(value))
+    // );
     this.checkScreen();
 
     this.fetchData();
@@ -100,44 +101,44 @@ export class Liveboard implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  handleAutocompleteKeydown(event: KeyboardEvent): void {
+  // handleAutocompleteKeydown(event: KeyboardEvent): void {
 
-    if (event.key !== 'Tab') {
-      return;
-    }
+  //   if (event.key !== 'Tab') {
+  //     return;
+  //   }
 
-    if (!this.autocomplete.activeOption) {
-      return;
-    }
+  //   if (!this.autocomplete.activeOption) {
+  //     return;
+  //   }
 
-    event.preventDefault();
+  //   event.preventDefault();
 
-    const selected =
-      this.autocomplete.activeOption.value;
+  //   const selected =
+  //     this.autocomplete.activeOption.value;
 
-    this.selectStation(selected);
-  }
+  //   this.selectStation(selected);
+  // }
 
-  searchStations(value: string): Observable<StationDto[]> {
+  // searchStations(value: string): Observable<StationDto[]> {
 
-    if (!value || value.length < 1) {
-      return of([]);
-    }
+  //   if (!value || value.length < 1) {
+  //     return of([]);
+  //   }
 
-    return new Observable(observer => {
+  //   return new Observable(observer => {
 
-      this.liveboardService.searchStations(value)
-        .then(result => {
-          observer.next(result);
-          observer.complete();
-        })
-        .catch(() => {
-          observer.next([]);
-          observer.complete();
-        });
+  //     this.liveboardService.searchStations(value)
+  //       .then(result => {
+  //         observer.next(result);
+  //         observer.complete();
+  //       })
+  //       .catch(() => {
+  //         observer.next([]);
+  //         observer.complete();
+  //       });
 
-    });
-  }
+  //   });
+  // }
 
   // After view init
   ngAfterViewInit(): void {
@@ -200,7 +201,7 @@ export class Liveboard implements OnInit, AfterViewInit, OnDestroy {
     const name = typeof station === 'string' ? station : station.name;
     this.selectedStation = name;
     localStorage.setItem('lastStation', name);
-    this.myControl.setValue('');
+    // this.myControl.setValue('');
     this.fetchData();
   }
 
