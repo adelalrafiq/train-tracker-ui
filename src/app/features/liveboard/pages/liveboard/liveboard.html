@@ -4,7 +4,8 @@
 
     <!-- HEADER -->
     <header class="relative flex items-center justify-center px-10 mt-6 z-50">
-        <app-autocomplete icon="search" placeholder="Zoek een station..." (stationSelected)="selectStation($event)">
+        <app-autocomplete class="text-red-500" icon="search" placeholder="Zoek een station..."
+            (stationSelected)="selectStation($event)">
         </app-autocomplete>
     </header>
 
@@ -24,7 +25,7 @@
         <div class="mb-0 flex items-center justify-between">
 
             <!-- Current Time -->
-            <div class="text-2xl font-semibold">
+            <div class="w-20  font-semibold text-sm sm:text-base md:text-lg lg:text-xl">
 
                 {{ currentTime | date:'HH' }}
 
@@ -39,33 +40,33 @@
             </div>
 
             <!-- Center -->
-            <div class="text-3xl text-white-300 font-medium">
-                Vertrek van {{selectedStation }}
+            <div class="text-white-300 font-medium  text-sm sm:text-base md:text-lg lg:text-xl">
+                Vertrek <span class="hidden sm:inline">van {{selectedStation }}</span>
             </div>
 
             <!-- Logo -->
             <div>
-                <img src="images/logo_B.png" alt="Train logo" class="h-12 w-auto object-contain" />
+                <img src="images/logo_B.png" alt="Train logo" class="h-8 sm:h-10 md:h-12 w-auto object-contain" />
             </div>
 
         </div>
 
         <!-- Table -->
-        <div class="relative z-0 max-h-[28vh] overflow-y-auto scroll ">
-            <table class="w-full text-left mb-5">
+        <div class="relative z-0 max-h-[20] md:max-h-[30vh] overflow-y-auto scroll  ">
+            <table class="w-full table-fixed text-left mb-5 ">
                 <tbody>
                     @for (row of rows; track row.vehicleInfoShortname; let first = $first) {
 
-                    <tr class="border-b border-white-800 hover:bg-white-900 transition" [class.border-t]="first"
-                        [class.border-white-700]="first">
-                        <td class="w-20 text-2xl font-semibold p-2">
-                            <span>
-                                {{ row.departureTime | date:'HH:mm' }}
-                            </span>
+                    <tr class="py-2 whitespace-nowrap align-top min-w-0 border-b border-white-800 hover:bg-white-900 transition text-xs sm:text-sm md:text-base lg:text-lg"
+                        [class.border-t]="first" [class.border-white-700]="first">
+                        <td class="py-2 font-semibold text-xs sm:text-sm md:text-base lg:text-lg">
+                            
+                                {{ row.departureTime | date:'HH : mm' }}
+                           
                             <!-- delay -->
                             @if (row.delayMinutes > 0) {
 
-                            <p class="text-white bg-red-500  text-sm">
+                            <p class="text-white bg-red-500 inline-block  px-1 rounded">
                                 +{{ row.delayMinutes }} min
                             </p>
 
@@ -73,21 +74,21 @@
                         </td>
 
                         <!-- Status -->
-                        <td class="w-25 py-0">
-                            <div class=" items-center">
+                        <td class="px-1 py-2 align-top min-w-0 text-xs sm:text-sm md:text-base lg:text-lg">
+                            <div class="text-white font-semibold">
 
                                 @if (row.displayStatus === 'geannuleerd') {
 
-                                <span class="bg-red-500 text-white font-semibold px-2 py-1 rounded">
+                                <span class="bg-red-500 px-2 py-1 rounded inline-block">
                                     Rijdt niet
                                 </span>
 
                                 } @else if (row.displayStatus === 'aan perron') {
-                                <span class="text-white font-semibold">
+                                <span >
                                     aan perron
                                 </span>
                                 } @else if (row.displayStatus === 'komt aan') {
-                                <span class="text-white font-semibold">
+                                <span >
                                     komt aan
                                 </span>
                                 }
@@ -95,9 +96,9 @@
                         </td>
 
                         <!-- Destination + Stops -->
-                        <td class="py-0">
+                        <td class=" px-1 py-2 align-top min-w-0">
 
-                            <div class="flex items-center gap-2 overflow-hidden">
+                            <div class="flex font-semibold items-center gap-2 overflow-hidden min-w-0 text-xs sm:text-sm md:text-base lg:text-lg">
 
                                 <!-- direction -->
                                 <span class="shrink-0 font-semibold text-yellow-400">
@@ -139,12 +140,12 @@
                         </td>
 
                         <!-- Train -->
-                        <td class="w-25 py-0">
+                        <td class="w-25 py-2">
                             {{ row.vehicleInfoShortname }}
                         </td>
 
                         <!-- Platform -->
-                        <td class="py-0">
+                        <td class="py-2 text-xs sm:text-sm md:text-base lg:text-lg">
 
                             @if (row.platform) {
 

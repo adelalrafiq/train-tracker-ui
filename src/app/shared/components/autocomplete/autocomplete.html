@@ -1,4 +1,11 @@
-<mat-form-field appearance="outline" class="w-full">
+<mat-form-field appearance="outline" class="custom-field w-full" style="
+    --field-bg: white !important;
+    --field-text: #60a5fa;
+    --field-border: #60a5fa;
+    --field-focus: #60a5fa;
+    --field-placeholder: #60a5fa;
+  
+">
     @if(label){
     <mat-label>
         {{ label }}

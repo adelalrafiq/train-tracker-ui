@@ -1,0 +1,37 @@
+.custom-field {
+
+  --field-bg: #111827;
+  --field-text: white;
+  --field-border: #4b5563;
+  --field-focus: #facc15;
+  --field-placeholder: #9ca3af;
+
+  .mat-mdc-text-field-wrapper {
+    background-color: var(--field-bg);
+    border-radius: 12px;
+  }
+
+  input.mat-mdc-input-element {
+    color: var(--field-text) !important;
+  }
+
+  input.mat-mdc-input-element::placeholder {
+    color: var(--field-placeholder);
+  }
+
+  .mdc-floating-label {
+    color: var(--field-placeholder) !important;
+  }
+
+  .mdc-notched-outline__leading,
+  .mdc-notched-outline__notch,
+  .mdc-notched-outline__trailing {
+    border-color: var(--field-border) !important;
+  }
+
+  &.mat-focused .mdc-notched-outline__leading,
+  &.mat-focused .mdc-notched-outline__notch,
+  &.mat-focused .mdc-notched-outline__trailing {
+    border-color: var(--field-focus) !important;
+  }
+}
