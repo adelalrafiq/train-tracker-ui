@@ -1,16 +1,11 @@
 import {
-  AfterViewInit,
   Component,
   OnInit,
   ChangeDetectorRef,
-  OnDestroy,
-  ViewChildren,
-  QueryList,
-  ElementRef
+  OnDestroy
 } from '@angular/core';
 import { Autocomplete } from '../../../../shared/components/autocomplete/autocomplete';
 import { CommonModule } from '@angular/common';
-
 import { Map } from '../../components/map/map';
 import { LiveboardService } from '../../services/liveboardService';
 import { LiveboardRow, StationDto } from '../../models/liveboardModel';
@@ -22,11 +17,10 @@ import { LiveboardRow, StationDto } from '../../models/liveboardModel';
   templateUrl: './liveboard.html',
   styleUrl: './liveboard.css',
 })
-export class Liveboard implements OnInit, AfterViewInit, OnDestroy {
+export class Liveboard implements OnInit, OnDestroy {
 
   currentTime = new Date();
-  selectedStation: string | null = null;
-  stationName = '';
+  selectedStation: string | null = null;  
   rows: LiveboardRow[] = [];
   latitude: number | null = null;
   longitude: number | null = null;
@@ -34,19 +28,12 @@ export class Liveboard implements OnInit, AfterViewInit, OnDestroy {
   loading = false;
   isSmallScreen = false;
   showColon = true;
-  overflowMap: boolean[] = [];
   isSecondPartVisible: boolean[] = [];
   private fetchTimer!: any;
-
   private clockTimer!: any;
-
   private colonTimer!: any;
 
-  @ViewChildren('viaContainer')
-  viaContainers!: QueryList<ElementRef>;
-
-  @ViewChildren('viaText')
-  viaTexts!: QueryList<ElementRef>;
+  private viaToggleTimer: any;
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -56,12 +43,9 @@ export class Liveboard implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     const savedStation = localStorage.getItem('lastStation') || 'sint-niklaas';
     this.selectedStation = savedStation;
-
-    this.checkScreen();
-
-    this.fetchData();
-
+    
     // refresh data
+    this.fetchData();
     this.fetchTimer = setInterval(() => {
       this.fetchData();
     }, 30000);
@@ -83,17 +67,10 @@ export class Liveboard implements OnInit, AfterViewInit, OnDestroy {
 
     }, 1000);
 
-    // responsive
-    window.addEventListener('resize', () => {
-      this.checkScreen();
-    });
-
     // via text toggle
-    this.isSecondPartVisible = this.rows.map(() => false);
-    setInterval(() => {
+    this.viaToggleTimer = setInterval(() => {
+      this.isSecondPartVisible = this.rows.map(() => false);
       this.rows.forEach((_, index) => {
-
-        // stagger effect (makes it look like train board UI)
         setTimeout(() => {
           this.isSecondPartVisible[index] =
             !this.isSecondPartVisible[index];
@@ -110,29 +87,6 @@ export class Liveboard implements OnInit, AfterViewInit, OnDestroy {
 
   getSecondPart(stops: any[]): string {
     return stops.slice(2).map(stop => stop.station).join(', ');
-  }
-
-  // After view init
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.calculateOverflow();
-    });
-  }
-
-  // Overflow
-  calculateOverflow(): void {
-    this.overflowMap = [];
-    this.viaContainers.forEach((containerRef, index) => {
-      const containerWidth = containerRef.nativeElement.offsetWidth;
-      const textWidth = this.viaTexts.get(index)?.nativeElement.scrollWidth || 0;
-      this.overflowMap[index] = textWidth > containerWidth;
-    });
-    this.cdr.markForCheck();
-  }
-
-  // Screen size
-  checkScreen() {
-    this.isSmallScreen = window.innerWidth < 768;
   }
 
   // Fetch data
@@ -153,11 +107,6 @@ export class Liveboard implements OnInit, AfterViewInit, OnDestroy {
       this.latitude = data.latitude;
       this.longitude = data.longitude;
 
-      // recalc overflow
-      setTimeout(() => {
-        this.calculateOverflow();
-      });
-
     } catch (error) {
       console.error("Fetch error:", error);
       this.errorMessage = "Failed to load data";
@@ -172,7 +121,7 @@ export class Liveboard implements OnInit, AfterViewInit, OnDestroy {
   selectStation(station: StationDto | string): void {
     const name = typeof station === 'string' ? station : station.name;
     this.selectedStation = name;
-    localStorage.setItem('lastStation', name);   
+    localStorage.setItem('lastStation', name);
     this.fetchData();
   }
 
@@ -181,19 +130,7 @@ export class Liveboard implements OnInit, AfterViewInit, OnDestroy {
     clearInterval(this.fetchTimer);
     clearInterval(this.clockTimer);
     clearInterval(this.colonTimer);
-  }
-
-  // Status class
-  getStatusClass(status: string): string {
-    switch (status) {
-      case 'geannuleerd':
-        return 'text-red-500 font-semibold';
-      case 'aan perron':
-      case 'komt aan':
-        return 'text-white font-semibold';
-      default:
-        return '';
-    }
+    clearInterval(this.viaToggleTimer);
   }
 }
 

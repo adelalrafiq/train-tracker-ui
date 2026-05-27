@@ -52,14 +52,13 @@
         </div>
 
         <!-- Table -->
-        <div class="relative z-0 max-h-[30vh] overflow-y-auto overflow-x-hidden">
+        <div class="relative z-0 max-h-[31vh] sm:max-h-[33vh] overflow-y-auto overflow-x-hidden">
 
             @for (row of rows; track row.vehicleInfoShortname; let first = $first) {
 
             <div class="
                 grid
-                grid-cols-[2fr_6fr_2fr_1fr]
-                sm:grid-cols-[1fr_1fr_3fr_1fr_1fr]
+                grid-cols-[2fr_6fr_2fr_1fr]                
                 gap-x-3
                 text-left
                 border-t
@@ -124,24 +123,35 @@
                         <div class="flex-1 min-w-0 overflow-hidden whitespace-nowrap ">
 
                             <div class="text-white-400 whitespace-nowrap">
-                                @if(row.stops.length > 2) {
-                                @if (isSecondPartVisible[$index]) {
+                                <span class="sm:hidden">
+                                    @if(row.stops.length > 2) {
+                                    @if (isSecondPartVisible[$index]) {
 
-                                {{ getSecondPart(row.stops) }}
+                                    {{ getSecondPart(row.stops) }}
 
-                                } @else {
+                                    } @else {
 
-                                via {{ getFirstPart(row.stops) }}
+                                    via {{ getFirstPart(row.stops) }}
 
-                                }
-                                } @else {
-                                via
-                                @for(stop of row.stops; track stop.station; let last = $last){
-                                <span>
-                                    {{ stop.station }}{{ !last ? ',' : '' }}
+                                    }
+                                    } @else {
+                                    via
+                                    @for(stop of row.stops; track stop.station; let last = $last){
+                                    <span>
+                                        {{ stop.station }}{{ !last ? ',' : '' }}
+                                    </span>
+                                    }
+                                    }
                                 </span>
-                                }
-                                }
+                                <!-- SM AND UP (NO TOGGLE) -->
+                                <span class="hidden sm:inline">
+                                    via
+                                    @for(stop of row.stops; track stop.station; let last = $last){
+                                    <span>
+                                        {{ stop.station }}{{ !last ? ',' : '' }}
+                                    </span>
+                                    }
+                                </span>
                             </div>
 
                         </div>
@@ -180,5 +190,5 @@
 </div>
 
 <!-- MAP -->
-<app-map [latitude]="latitude" [longitude]="longitude" [stationName]="stationName">
+<app-map [latitude]="latitude" [longitude]="longitude" [stationName]="selectedStation">
 </app-map>
