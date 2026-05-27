@@ -18,9 +18,9 @@ A modern real-time train departure board web application inspired by real Europe
 
 ## 📸 Preview
 
-![Screenshot of homepage](images/nmbs_home.png)
-![Screenshot of liveboard](images/nmbs_liveboard.png)
-![Screenshot of connections](images/nmbs_connections.png)
+| Home | Liveboard | Connections |
+|------|----------|-------------|
+| ![Home](images/nmbs_home.png) | ![Liveboard](images/nmbs_liveboard.png) | ![Connections](images/nmbs_connections.png) |
 
 ---
 
@@ -30,8 +30,49 @@ A modern real-time train departure board web application inspired by real Europe
 * 🔄 Auto refresh every 30 seconds
 * 🔍 Station search with autocomplete
 * 🗺️ Interactive map (Mapbox)
-* ⏰ Real-time clock
+* ⏰ Live clock
 * 📱 Responsive design (mobile, tablet, desktop)
+
+---
+
+## 📄 Pages
+
+### 🏠 Home
+- Landing page with fast station search
+- Quick access to live data
+- Clean UI overview
+
+### 🚉 Liveboard
+- Real-time departures per station
+- Platform, delay and direction info
+- Auto-updating schedule every 30 seconds
+
+### 🔗 Connections
+- Route planner between stations
+- Displays possible train connections
+- Useful for trip planning and transfer overview
+
+---
+
+## 🌍 Coverage
+
+### 🇧🇪 Belgium (Full Support)
+- Real-time NMBS / iRail API integration
+- Accurate live departures
+- Platforms, delays, and train info
+
+### 🇫🇷 International (Limited Support)
+- Stations like Paris can be searched
+- Live departure data may not be available
+- Depends on external railway API support
+
+---
+
+## ⚠️ Important Note
+
+This project is primarily focused on **Belgian railway data (NMBS)**.
+
+International stations (e.g. Paris, Amsterdam) are supported for search and navigation purposes, but **real-time departure information is not guaranteed outside Belgium**.
 
 ---
 
@@ -47,11 +88,49 @@ A modern real-time train departure board web application inspired by real Europe
 
 ```
 src/
- ├── app/
- │   ├── models/
- │   ├── pages/
- │   └── services/
- └── environments/
+├── app/
+│   ├── core/                          # Core layer (singleton services)
+│   │   ├── interceptors/              # HTTP interceptors (auth, error handling)
+│   │   └── services/                  # Global services (API, utils)
+│   │
+│   ├── features/                      # Feature-based modules
+│   │   ├── connections/               # Route planner / connections feature
+│   │   │   ├── components/
+│   │   │   │   └── map/
+│   │   │   ├── models/
+│   │   │   ├── pages/
+│   │   │   │   └── connections/
+│   │   │   └── services/
+│   │   │
+│   │   ├── home/                      # Landing page feature
+│   │   │   └── pages/
+│   │   │       └── home/
+│   │   │
+│   │   └── liveboard/                 # Real-time departures feature
+│   │       ├── components/
+│   │       │   └── map/
+│   │       ├── models/
+│   │       ├── pages/
+│   │       │   └── liveboard/
+│   │       └── services/
+│   │
+│   ├── shared/                        # Shared reusable layer
+│   │   ├── components/
+│   │   │   ├── autocomplete/
+│   │   │   ├── navbar/
+│   │   │   └── progress-bar/
+│   │   ├── models/
+│   │   └── services/
+│   │
+│   ├── app.component.ts
+│   ├── app.routes.ts
+│   ├── app.config.ts
+│   └── app.html
+│
+├── environments/                      # Environment configs (API keys, URLs)
+├── styles.css
+├── main.ts
+└── index.html
 ```
 
 ---
@@ -84,7 +163,7 @@ ng serve
 App runs on:
 
 ```
-http://localhost:4200/liveboard
+http://localhost:4200
 ```
 
 ---
@@ -102,7 +181,8 @@ export const environment = {
   api: {
     baseUrl: 'https://traintracker-1.onrender.com/api',
     liveboard: '/liveboard',
-    stations: '/stations'
+    stations: '/stations',
+    connections: '/connections'
   },
   mapboxToken: 'YOUR_MAPBOX_TOKEN'
 };
