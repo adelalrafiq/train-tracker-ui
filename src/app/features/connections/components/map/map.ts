@@ -6,11 +6,8 @@ import {
   OnChanges,
   SimpleChanges,
   AfterViewInit,
-  OnDestroy,
-  inject
+  OnDestroy
 } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { PLATFORM_ID } from '@angular/core';
 import mapboxgl from 'mapbox-gl';
 import { environment } from '../../../../../environments/environment';
 import { MapLine, MapMarker } from '../../models/connectionsModel';
@@ -21,7 +18,7 @@ import { MapLine, MapMarker } from '../../models/connectionsModel';
   styleUrl: './map.css',
 })
 export class Map implements AfterViewInit, OnChanges, OnDestroy {
-  @ViewChild('mapContainer', { static: true }) mapContainer!: ElementRef;
+  @ViewChild('mapContainer', { static: false }) mapContainer!: ElementRef;
   @Input() center: [number, number] = [4.3572, 50.8476]; // [lng, lat]
   @Input() zoom = 7;
   @Input() markers: MapMarker[] = [];
@@ -29,9 +26,6 @@ export class Map implements AfterViewInit, OnChanges, OnDestroy {
 
   private map?: mapboxgl.Map;
   private markerInstances: mapboxgl.Marker[] = [];
-  private lineLayerAdded = false;
-
-
 
   ngAfterViewInit(): void {
     mapboxgl.accessToken = environment.mapboxToken;

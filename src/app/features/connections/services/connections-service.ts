@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Connection, ConnectionDto, Departure } from '../models/connectionsModel';
+import { ConnectionDto } from '../models/connectionsModel';
 import { StationDto } from '../../liveboard/models/liveboardModel';
 
 @Injectable({
@@ -47,5 +47,9 @@ export class ConnectionsService {
         `${this.stationsUrl}?query=${query}`
       )
     )
+  }
+
+  get connectionsValue(): ConnectionDto[] {
+    return this._connections$.value;
   }
 }

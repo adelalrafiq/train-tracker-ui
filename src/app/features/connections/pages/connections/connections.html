@@ -63,16 +63,15 @@
     <div class="flex-1 max-h-[31vh] md:max-h-[38vh] overflow-y-auto">
 
         <!-- RESULTS -->
-        @if ((connections$ | async)?.length) {
+        @let connections = (connections$ | async);
+        @if (connections?.length) {
 
-        @for (conn of (connections$ | async); track conn) {
+        @for (conn of connections; track conn) {
 
         <div class="rounded-3xl border mb-4 bg-white p-6 shadow">
 
             <!-- HEADER -->
             <div class="flex  gap-4 flex-row items-center justify-between">
-
-                <!-- <div class="flex items-center gap-6"> -->
 
                 <!-- Departure -->
                 <div class="text-center">
@@ -116,7 +115,7 @@
                         Perron {{ conn.arrivalPlatform }}
                     </div>
                 </div>
-                <!-- </div> -->
+
 
                 <!-- Badge -->
                 <!-- <span class="rounded-full px-4 py-2 text-sm font-semibold" [ngClass]="
@@ -132,8 +131,6 @@
                     }}
                 </span> -->
             </div>
-
-            <!-- <mat-divider class="my-5"></mat-divider> -->
 
             <!-- TRAINS -->
             <div class="space-y-4">

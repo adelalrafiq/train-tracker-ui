@@ -9,7 +9,6 @@ import { MapMarker, MapLine } from '../../models/connectionsModel';
 import { Map } from '../../components/map/map';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 @Component({
@@ -19,8 +18,8 @@ import { MatIconModule } from '@angular/material/icon';
     CommonModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule,
-    MatDividerModule],
+    MatProgressSpinnerModule
+  ],
   templateUrl: './connections.html',
   styleUrl: './connections.css',
 })
@@ -79,7 +78,7 @@ export class Connections {
   // MAP CENTER
   // -------------------------
   get mapCenter(): [number, number] {
-    const connections = this.connectionsService['_connections$'].value;
+    const connections = this.connectionsService.connectionsValue;
 
     if (connections.length > 0) {
       const c = connections[0];
@@ -103,7 +102,7 @@ export class Connections {
   // -------------------------
   get mapMarkers(): MapMarker[] {
     const markers: MapMarker[] = [];
-    const connections = this.connectionsService['\x5fconnections$'].value;
+    const connections = this.connectionsService.connectionsValue;
 
     connections.forEach(conn => {
 
@@ -132,7 +131,7 @@ export class Connections {
   // MAP LINE
   // -------------------------
   get mapLine(): MapLine | undefined {
-    const connections = this.connectionsService['\x5fconnections$'].value;
+    const connections = this.connectionsService.connectionsValue;
 
     if (!connections.length) return undefined;
 
