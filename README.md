@@ -12,13 +12,15 @@ A modern real-time train departure board web application inspired by real Europe
 
 ## 🌍 Live Demo
 
-🔗 https://train-tracker-ui-rust.vercel.app/liveboard
+🔗 https://train-tracker-ui-rust.vercel.app
 
 ---
 
 ## 📸 Preview
 
-![Screenshot of homepage](images/liveboard.png)
+![Screenshot of homepage](images/nmbs_home.png)
+![Screenshot of liveboard](images/nmbs_liveboard.png)
+![Screenshot of connections](images/nmbs_connections.png)
 
 ---
 
