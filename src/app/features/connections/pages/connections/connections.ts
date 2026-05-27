@@ -2,15 +2,12 @@ import {
   Component,
   inject
 } from '@angular/core';
-
 import { BehaviorSubject } from 'rxjs';
 import { ConnectionsService } from '../../services/connections-service';
 import { Autocomplete } from '../../../../shared/components/autocomplete/autocomplete';
 import { MapMarker, MapLine } from '../../models/connectionsModel';
 import { Map } from '../../components/map/map';
 import { CommonModule } from '@angular/common';
-
-
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -37,8 +34,6 @@ export class Connections {
 
   readonly connections$ = this.connectionsService.connections$;
   readonly loading$ = this.connectionsService.loading$;
-
-
 
   // -------------------------
   // INIT
