@@ -1,0 +1,5 @@
+.map-wrapper {
+    height: 32vh;
+    min-height: 240px;
+    flex-shrink: 0;
+}

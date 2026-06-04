@@ -1,194 +1,203 @@
-<!-- liveboard.html -->
+<div class="h-screen flex flex-col bg-[#004BAC] text-white overflow-hidden">
 
-<div class="bg-[#004BAC] text-white min-h-screen flex flex-col ">
+    <!-- MAIN WRAPPER -->
+    <div class="flex-1 flex flex-col min-h-0">
 
-    <!-- HEADER -->
-    <header class="relative flex items-center justify-center px-10 mt-6 z-50">
-        <app-autocomplete class="text-red-500" icon="search" placeholder="Zoek een station..."
-            (stationSelected)="selectStation($event)">
-        </app-autocomplete>
-    </header>
+        <!-- CONTENT -->
+        <div class="flex-1 flex flex-col overflow-hidden pl-2 min-h-0">
 
-    <!-- ERROR -->
-    @if (errorMessage) {
+            <!-- HEADER -->
+            <header class="flex items-center justify-center px-10 mt-6">
+                <app-autocomplete class="text-red-500" icon="search" placeholder="Zoek een station..."
+                    (stationSelected)="selectStation($event)">
+                </app-autocomplete>
+            </header>
 
-    <div class="px-10 pt-3 text-red-500">
-        ⚠ {{ errorMessage }}
-    </div>
-
-    }
-
-    <!-- CONTENT -->
-    <div class="flex-1 pl-2 py-0">
-
-        <!-- Top Info Bar -->
-        <div class="mb-0 flex items-center justify-between">
-
-            <!-- Current Time -->
-            <div class="w-20  font-semibold  text-base md:text-lg lg:text-xl">
-
-                {{ currentTime | date:'HH' }}
-
-                @if (showColon) {
-                :
-                } @else {
-                <span class="opacity-0">:</span>
-                }
-
-                {{ currentTime | date:'mm' }}
-
+            <!-- ERROR -->
+            @if (errorMessage) {
+            <div class="px-10 pt-3 text-red-500">
+                ⚠ {{ errorMessage }}
             </div>
+            }
 
-            <!-- Center -->
-            <div class="text-white-300 font-medium  text-sm sm:text-base md:text-lg lg:text-xl">
-                Vertrek van {{selectedStation }}
-            </div>
+            <!-- INNER CONTENT AREA -->
+            <div class="flex-1 flex flex-col min-h-0">
 
-            <!-- Logo -->
-            <div>
-                <img src="images/logo_B.png" alt="Train logo" class="h-8 sm:h-10 md:h-12 w-auto object-contain" />
-            </div>
-
-        </div>
-
-        <!-- Table -->
-        <div class="relative z-0 max-h-[31vh] sm:max-h-[33vh] overflow-y-auto overflow-x-hidden">
-
-            @for (row of rows; track row.vehicleInfoShortname; let first = $first) {
-
-            <div class="
-                grid
-                grid-cols-[2fr_6fr_2fr_1fr]                
-                gap-x-3
-                text-left
-                border-t
-                border-white/20
-                hover:bg-white-900
-                transition
-            ">
-                <!-- TIME -->
-                <div class="py-2 flex flex-col sm:flex-row sm:items-center sm:gap-3">
+                <!-- TOP INFO BAR -->
+                <div class="mb-0 flex items-center justify-between">
 
                     <!-- TIME -->
-                    <div class="font-semibold whitespace-nowrap flex flex-col">
+                    <div class="w-20 font-semibold text-base md:text-lg lg:text-xl">
 
-                        <span class="text-base">
-                            {{ row.departureTime | date:'HH:mm' }}
-                        </span>
+                        {{ currentTime | date:'HH' }}
 
-                        @if (row.delayMinutes > 0) {
-                        <div class="mt-1 text-xs bg-red-500 inline-block px-2 py-0.5 rounded w-fit">
-                            +{{ row.delayMinutes }} min
-                        </div>
+                        @if (showColon) {
+                        :
+                        } @else {
+                        <span class="opacity-0">:</span>
                         }
 
+                        {{ currentTime | date:'mm' }}
                     </div>
 
-                    <!-- STATUS -->
-                    <div class="whitespace-nowrap mt-1 sm:mt-0">
+                    <!-- CENTER -->
+                    <div class="text-white-300 font-medium text-sm sm:text-base md:text-lg lg:text-xl">
+                        Vertrek van {{ selectedStation }}
+                    </div>
 
-                        @switch (row.displayStatus) {
-
-                        @case ('geannuleerd') {
-                        <span class="mt-1 text-xs bg-red-500 px-1 py-1 rounded inline-block">
-                            Rijdt niet
-                        </span>
-                        }
-
-                        @case ('aan perron') {
-                        <span>aan perron</span>
-                        }
-
-                        @case ('komt aan') {
-                        <span>komt aan</span>
-                        }
-
-                        }
-
+                    <!-- LOGO -->
+                    <div>
+                        <img src="images/logo_B.png" alt="Train logo"
+                            class="h-8 sm:h-10 md:h-12 w-auto object-contain" />
                     </div>
 
                 </div>
 
-                <!-- VIA -->
-                <div class="py-2 min-w-0 overflow-hidden">
+                <!-- TABLE -->
+                <div class="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
 
-                    <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0">
+                    @for (row of rows; track row.vehicleInfoShortname; let first = $first) {
 
-                        <span class="text-yellow-400 font-semibold shrink-0 whitespace-nowrap">
-                            {{ row.directionName }}
-                        </span>
+                    <div class="
+                        grid
+                        grid-cols-[2fr_6fr_2fr_1fr]
+                        gap-x-3
+                        text-left
+                        border-t
+                        border-white/20
+                        hover:bg-white-900
+                        transition
+                    ">
 
-                        @if (row.stops.length > 0) {
+                        <!-- TIME -->
+                        <div class="py-2 flex flex-col sm:flex-row sm:items-center sm:gap-3">
 
-                        <div class="flex-1 min-w-0 overflow-hidden whitespace-nowrap ">
+                            <div class="font-semibold whitespace-nowrap flex flex-col">
 
-                            <div class="text-white-400 whitespace-nowrap">
-                                <span class="sm:hidden">
-                                    @if(row.stops.length > 2) {
-                                    @if (isSecondPartVisible[$index]) {
+                                <div class="w-20 font-semibold text-base md:text-lg lg:text-xl whitespace-nowrap">
+                                    {{ row.departureTime | date:'HH : mm' }}
+                                </div>
+                               
 
-                                    {{ getSecondPart(row.stops) }}
+                                @if (row.delayMinutes > 0) {
+                                <div class="mt-1 text-xs bg-red-500 inline-block px-2 py-0.5 rounded w-fit">
+                                    +{{ row.delayMinutes }} min
+                                </div>
+                                }
 
-                                    } @else {
+                            </div>
 
-                                    via {{ getFirstPart(row.stops) }}
+                            <div class="whitespace-nowrap mt-1 sm:mt-0">
 
-                                    }
-                                    } @else {
-                                    via
-                                    @for(stop of row.stops; track stop.station; let last = $last){
-                                    <span>
-                                        {{ stop.station }}{{ !last ? ',' : '' }}
-                                    </span>
-                                    }
-                                    }
+                                @switch (row.displayStatus) {
+
+                                @case ('geannuleerd') {
+                                <span class="text-xs bg-red-500 px-1 py-1 rounded inline-block">
+                                    Rijdt niet
                                 </span>
-                                <!-- SM AND UP (NO TOGGLE) -->
-                                <span class="hidden sm:inline">
-                                    via
-                                    @for(stop of row.stops; track stop.station; let last = $last){
-                                    <span>
-                                        {{ stop.station }}{{ !last ? ',' : '' }}
-                                    </span>
-                                    }
-                                </span>
+                                }
+
+                                @case ('aan perron') {
+                                <span>aan perron</span>
+                                }
+
+                                @case ('komt aan') {
+                                <span>komt aan</span>
+                                }
+
+                                }
+
                             </div>
 
                         </div>
 
-                        }
+                        <!-- VIA -->
+                        <div class="py-2 min-w-0 overflow-hidden">
+
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0">
+
+                                <span class="text-yellow-400 font-semibold shrink-0 whitespace-nowrap">
+                                    {{ row.directionName }}
+                                </span>
+
+                                @if (row.stops.length > 0) {
+
+                                <div class="flex-1 min-w-0 overflow-hidden whitespace-nowrap">
+
+                                    <div class="text-white-400 whitespace-nowrap">
+
+                                        <span class="sm:hidden">
+
+                                            @if(row.stops.length > 2) {
+                                            @if (isSecondPartVisible[$index]) {
+                                            {{ getSecondPart(row.stops) }}
+                                            } @else {
+                                            via {{ getFirstPart(row.stops) }}
+                                            }
+                                            } @else {
+                                            via
+                                            @for(stop of row.stops; track stop.station; let last = $last){
+                                            <span>
+                                                {{ stop.station }}{{ !last ? ',' : '' }}
+                                            </span>
+                                            }
+                                            }
+
+                                        </span>
+
+                                        <span class="hidden sm:inline">
+                                            via
+                                            @for(stop of row.stops; track stop.station; let last = $last){
+                                            <span>
+                                                {{ stop.station }}{{ !last ? ',' : '' }}
+                                            </span>
+                                            }
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                                }
+
+                            </div>
+
+                        </div>
+
+                        <!-- TRAIN -->
+                        <div class="py-2 whitespace-nowrap">
+                            {{ row.vehicleInfoShortname }}
+                        </div>
+
+                        <!-- PLATFORM -->
+                        <div class="py-2 whitespace-nowrap">
+
+                            @if (row.platform) {
+                            <span class="font-semibold">
+                                {{ row.platform }}
+                            </span>
+                            } @else {
+                            <span class="text-white-500">—</span>
+                            }
+
+                        </div>
 
                     </div>
 
-                </div>
-
-                <!-- TRAIN -->
-                <div class="py-2 whitespace-nowrap">
-                    {{ row.vehicleInfoShortname }}
-                </div>
-
-                <!-- PLATFORM -->
-                <div class="py-2 whitespace-nowrap">
-
-                    @if (row.platform) {
-                    <span class="font-semibold">
-                        {{ row.platform }}
-                    </span>
-                    } @else {
-                    <span class="text-white-500">geanu</span>
                     }
 
                 </div>
 
             </div>
 
-            }
-
         </div>
+
+    </div>
+
+    <!-- MAP -->
+    <div class="map-wrapper">
+        <app-map [latitude]="latitude" [longitude]="longitude" [stationName]="selectedStation">
+        </app-map>
     </div>
 
 </div>
-
-<!-- MAP -->
-<app-map [latitude]="latitude" [longitude]="longitude" [stationName]="selectedStation">
-</app-map>
