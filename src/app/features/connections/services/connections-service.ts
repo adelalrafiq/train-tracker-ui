@@ -30,7 +30,12 @@ export class ConnectionsService {
       this.baseUrl, { params })
       .subscribe({
         next: (data) => {
-          this._connections$.next(data);
+          const fixed = data.map(c => ({
+            ...c,
+            departureTime: new Date(c.departureTime).toLocaleString(),
+            arrivalTime: new Date(c.arrivalTime).toLocaleString(),
+          }));
+          this._connections$.next(fixed);
           this._loading$.next(false);
         },
         error: (err) => {
