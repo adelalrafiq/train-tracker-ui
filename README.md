@@ -179,7 +179,7 @@ src/environments/environment.ts
 ```ts
 export const environment = {
   api: {
-    baseUrl: 'https://traintracker-1.onrender.com/api',
+    baseUrl: 'https://traintracker-1.onrender.com',
     liveboard: '/liveboard',
     stations: '/stations',
     connections: '/connections'
@@ -194,7 +194,7 @@ export const environment = {
 
 ### Base URL
 
-https://traintracker-1.onrender.com/api
+https://traintracker-1.onrender.com
 
 ---
 
@@ -205,7 +205,7 @@ https://traintracker-1.onrender.com/api
 Example:
 
 ```
-https://traintracker-1.onrender.com/api/liveboard/Sint-Niklaas
+https://traintracker-1.onrender.com/liveboard/Sint-Niklaas
 ```
 
 Response:
@@ -236,7 +236,7 @@ Response:
 Example:
 
 ```
-https://traintracker-1.onrender.com/api/stations?query=Gen
+https://traintracker-1.onrender.com/stations?query=Gen
 ```
 
 Response:
