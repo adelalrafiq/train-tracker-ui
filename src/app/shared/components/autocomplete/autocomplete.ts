@@ -2,7 +2,10 @@ import {
   Component, EventEmitter,
   Input,
   Output,
-  ViewChild
+  ViewChild,
+  OnInit,
+  OnChanges,
+  SimpleChanges
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -27,7 +30,7 @@ import { StationService } from '../../services/station-service';
   templateUrl: './autocomplete.html',
   styleUrl: './autocomplete.css',
 })
-export class Autocomplete {
+export class Autocomplete implements OnInit, OnChanges {
   @Input() placeholder = 'Zoek een station...';
   @Input() label?: string;
   @Input() icon?: string;
@@ -52,6 +55,16 @@ export class Autocomplete {
       map(value => typeof value === 'string' ? value : value?.name || ''),
       switchMap(value => this.searchStations(value))
     );
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['initialValue']) {
+      const current = this.control.value;
+      const strCurrent = typeof current === 'string' ? current : current?.name || '';
+      if (this.initialValue && strCurrent !== this.initialValue) {
+        this.control.setValue(this.initialValue, { emitEvent: false });
+      }
+    }
   }
 
   searchStations(value: string): Observable<StationDto[]> {

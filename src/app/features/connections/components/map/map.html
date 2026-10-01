@@ -1,1 +1,11 @@
-<div #mapContainer id="map-container"></div>
+<div #mapContainer id="map-container" class="w-full h-full relative"></div>
+
+@if (distanceText && line) {
+  <div class="absolute bottom-6 right-6 z-10 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-xl border border-slate-200 text-slate-800 flex items-center gap-2">
+    <div class="w-2 h-2 rounded-full bg-blue-600"></div>
+    <div>
+      <div class="text-[10px] uppercase tracking-wider font-semibold text-slate-500">Afstand (hemelsbreed)</div>
+      <div class="text-base font-bold text-slate-900">{{ distanceText }}</div>
+    </div>
+  </div>
+}

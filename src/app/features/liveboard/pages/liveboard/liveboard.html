@@ -1,203 +1,230 @@
-<div class="h-screen flex flex-col bg-[#004BAC] text-white overflow-hidden">
+<div class="relative w-full h-full overflow-hidden flex flex-col md:flex-row bg-[#002f6c]">
 
-    <!-- MAIN WRAPPER -->
-    <div class="flex-1 flex flex-col min-h-0">
+  <!-- FULL SCREEN MAP (BEHIND/BESIDE PANEL) -->
+  <div class="absolute inset-0 w-full h-full z-0"
+       [class.hidden]="mobileView === 'list'"
+       [class.block]="true"
+       [class.md:block]="true">
+    <app-map
+      [latitude]="latitude"
+      [longitude]="longitude"
+      [stationName]="selectedStation"
+      [destinations]="destinationsOnMap"
+      [highlightedDestination]="highlightedDestination"
+      [isMobileMode]="mobileView === 'map'"
+      (destinationSelected)="onDestinationFromMap($event)">
+    </app-map>
 
-        <!-- CONTENT -->
-        <div class="flex-1 flex flex-col overflow-hidden pl-2 min-h-0">
+    <!-- MOBILE FLOATING CONTROL (ONLY IN MOBILE MAP MODE) -->
+    @if (mobileView === 'map') {
+      <div class="md:hidden absolute top-4 left-4 right-4 z-20 flex items-center justify-between gap-2 bg-[#003082]/95 backdrop-blur-md p-3 rounded-2xl shadow-xl text-white border border-white/15">
+        <button
+          (click)="setMobileView('list')"
+          class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/15 hover:bg-white/25 active:bg-white/30 text-xs font-semibold tracking-wide transition-colors">
+          <mat-icon class="!h-4 !w-4 !text-base">arrow_back</mat-icon>
+          Terug naar resultaten
+        </button>
 
-            <!-- HEADER -->
-            <header class="flex items-center justify-center px-10 mt-6">
-                <app-autocomplete class="text-red-500" icon="search" placeholder="Zoek een station..."
-                    (stationSelected)="selectStation($event)">
-                </app-autocomplete>
-            </header>
+        <div class="text-right">
+          <div class="text-xs font-bold truncate max-w-[150px]">{{ selectedStation }}</div>
+          <div class="text-[10px] text-amber-300 font-medium">
+            {{ destinationsOnMap.length }} bestemmingen op kaart
+          </div>
+        </div>
+      </div>
+    }
+  </div>
 
-            <!-- ERROR -->
-            @if (errorMessage) {
-            <div class="px-10 pt-3 text-red-500">
-                ⚠ {{ errorMessage }}
-            </div>
-            }
+  <!-- LEFT PANEL: LIVEBOARD INFORMATION (DESKTOP STICKY SIDEBAR / MOBILE FULL LIST) -->
+  <div class="w-full md:w-[390px] lg:w-[420px] shrink-0 h-full z-10 flex flex-col bg-[#002b66]/95 backdrop-blur-md text-white border-r border-white/10 shadow-2xl relative"
+       [class.hidden]="mobileView === 'map'"
+       [class.flex]="true"
+       [class.md:flex]="true">
 
-            <!-- INNER CONTENT AREA -->
-            <div class="flex-1 flex flex-col min-h-0">
+    <!-- SEARCH & BRAND HEADER -->
+    <div class="p-4 border-b border-white/10 flex flex-col gap-3 shrink-0 bg-[#002558]">
 
-                <!-- TOP INFO BAR -->
-                <div class="mb-0 flex items-center justify-between">
-
-                    <!-- TIME -->
-                    <div class="w-20 font-semibold text-base md:text-lg lg:text-xl">
-
-                        {{ currentTime | date:'HH' }}
-
-                        @if (showColon) {
-                        :
-                        } @else {
-                        <span class="opacity-0">:</span>
-                        }
-
-                        {{ currentTime | date:'mm' }}
-                    </div>
-
-                    <!-- CENTER -->
-                    <div class="text-white-300 font-medium text-sm sm:text-base md:text-lg lg:text-xl">
-                        Vertrek van {{ selectedStation }}
-                    </div>
-
-                    <!-- LOGO -->
-                    <div>
-                        <img src="images/logo_B.png" alt="Train logo"
-                            class="h-8 sm:h-10 md:h-12 w-auto object-contain" />
-                    </div>
-
-                </div>
-
-                <!-- TABLE -->
-                <div class="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
-
-                    @for (row of rows; track row.vehicleInfoShortname; let first = $first) {
-
-                    <div class="
-                        grid
-                        grid-cols-[2fr_6fr_2fr_1fr]
-                        gap-x-3
-                        text-left
-                        border-t
-                        border-white/20
-                        hover:bg-white-900
-                        transition
-                    ">
-
-                        <!-- TIME -->
-                        <div class="py-2 flex flex-col sm:flex-row sm:items-center sm:gap-3">
-
-                            <div class="font-semibold whitespace-nowrap flex flex-col">
-
-                                <div class="w-20 font-semibold text-base md:text-lg lg:text-xl whitespace-nowrap">
-                                    {{ row.departureTime | date:'HH : mm' }}
-                                </div>
-                               
-
-                                @if (row.delayMinutes > 0) {
-                                <div class="mt-1 text-xs bg-red-500 inline-block px-2 py-0.5 rounded w-fit">
-                                    +{{ row.delayMinutes }} min
-                                </div>
-                                }
-
-                            </div>
-
-                            <div class="whitespace-nowrap mt-1 sm:mt-0">
-
-                                @switch (row.displayStatus) {
-
-                                @case ('geannuleerd') {
-                                <span class="text-xs bg-red-500 px-1 py-1 rounded inline-block">
-                                    Rijdt niet
-                                </span>
-                                }
-
-                                @case ('aan perron') {
-                                <span>aan perron</span>
-                                }
-
-                                @case ('komt aan') {
-                                <span>komt aan</span>
-                                }
-
-                                }
-
-                            </div>
-
-                        </div>
-
-                        <!-- VIA -->
-                        <div class="py-2 min-w-0 overflow-hidden">
-
-                            <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0">
-
-                                <span class="text-yellow-400 font-semibold shrink-0 whitespace-nowrap">
-                                    {{ row.directionName }}
-                                </span>
-
-                                @if (row.stops.length > 0) {
-
-                                <div class="flex-1 min-w-0 overflow-hidden whitespace-nowrap">
-
-                                    <div class="text-white-400 whitespace-nowrap">
-
-                                        <span class="sm:hidden">
-
-                                            @if(row.stops.length > 2) {
-                                            @if (isSecondPartVisible[$index]) {
-                                            {{ getSecondPart(row.stops) }}
-                                            } @else {
-                                            via {{ getFirstPart(row.stops) }}
-                                            }
-                                            } @else {
-                                            via
-                                            @for(stop of row.stops; track stop.station; let last = $last){
-                                            <span>
-                                                {{ stop.station }}{{ !last ? ',' : '' }}
-                                            </span>
-                                            }
-                                            }
-
-                                        </span>
-
-                                        <span class="hidden sm:inline">
-                                            via
-                                            @for(stop of row.stops; track stop.station; let last = $last){
-                                            <span>
-                                                {{ stop.station }}{{ !last ? ',' : '' }}
-                                            </span>
-                                            }
-                                        </span>
-
-                                    </div>
-
-                                </div>
-
-                                }
-
-                            </div>
-
-                        </div>
-
-                        <!-- TRAIN -->
-                        <div class="py-2 whitespace-nowrap">
-                            {{ row.vehicleInfoShortname }}
-                        </div>
-
-                        <!-- PLATFORM -->
-                        <div class="py-2 whitespace-nowrap">
-
-                            @if (row.platform) {
-                            <span class="font-semibold">
-                                {{ row.platform }}
-                            </span>
-                            } @else {
-                            <span class="text-white-500">—</span>
-                            }
-
-                        </div>
-
-                    </div>
-
-                    }
-
-                </div>
-
-            </div>
-
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <img src="images/logo_B.png" alt="NMBS/SNCB" class="h-6 w-auto object-contain" />
+          <span class="font-bold text-base tracking-wide text-white">Liveboard</span>
         </div>
 
+        <!-- LIVE DIGITAL CLOCK -->
+        <div class="flex items-center gap-1 font-mono text-sm px-2.5 py-1 rounded-lg bg-black/30 border border-white/10 text-amber-300 font-semibold">
+          <span>{{ currentTime | date:'HH' }}</span>
+          <span [class.opacity-0]="!showColon">:</span>
+          <span>{{ currentTime | date:'mm' }}</span>
+        </div>
+      </div>
+
+      <!-- AUTOCOMPLETE SEARCH -->
+      <div class="w-full">
+        <app-autocomplete
+          icon="search"
+          placeholder="Zoek vertrekstation..."
+          [initialValue]="selectedStation"
+          (stationSelected)="selectStation($event)">
+        </app-autocomplete>
+      </div>
+
+      <!-- CURRENT STATION TITLE & BADGE -->
+      <div class="flex items-center justify-between gap-2 pt-1">
+        <div class="min-w-0">
+          <div class="text-[11px] uppercase tracking-wider text-slate-300 font-medium">Vertrekstation</div>
+          <h1 class="text-lg font-bold text-white truncate">{{ selectedStation }}</h1>
+        </div>
+
+        @if (destinationsOnMap.length > 0) {
+          <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-200 text-xs font-medium shrink-0">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            <span>{{ destinationsOnMap.length }} bestemmingen</span>
+          </div>
+        }
+      </div>
+
     </div>
 
-    <!-- MAP -->
-    <div class="map-wrapper">
-        <app-map [latitude]="latitude" [longitude]="longitude" [stationName]="selectedStation">
-        </app-map>
+    <!-- ERROR ALERT -->
+    @if (errorMessage) {
+      <div class="mx-4 my-2 p-3 rounded-xl bg-red-900/60 border border-red-500/40 text-red-200 text-xs flex items-center gap-2">
+        <mat-icon class="!h-4 !w-4 !text-base text-red-400 shrink-0">error_outline</mat-icon>
+        <span>{{ errorMessage }}</span>
+      </div>
+    }
+
+    <!-- DEPARTURES SCROLLABLE LIST -->
+    <div class="flex-1 overflow-y-auto overflow-x-hidden p-2 space-y-1.5 divide-y divide-white/5">
+
+      @if (loading && !rows.length) {
+        <div class="p-8 flex flex-col items-center justify-center gap-3 text-slate-300">
+          <mat-spinner diameter="32"></mat-spinner>
+          <span class="text-xs">Liveboard data laden...</span>
+        </div>
+      } @else if (!loading && !rows.length) {
+        <div class="p-8 text-center text-slate-300 flex flex-col items-center gap-2">
+          <mat-icon class="!h-8 !w-8 !text-2xl text-slate-400">train</mat-icon>
+          <p class="text-sm font-medium">Geen vertrekkende treinen gevonden</p>
+          <p class="text-xs text-slate-400">Probeer een ander station of controleer de spelling.</p>
+        </div>
+      } @else {
+
+        @for (row of rows; track row.vehicleInfoShortname + row.departureTime) {
+          <div
+            (click)="onRowClick(row)"
+            class="group p-2.5 rounded-xl cursor-pointer transition-all duration-150 hover:bg-white/10 active:bg-white/15"
+            [class.bg-white-15]="highlightedDestination === row.directionName"
+            [class.border-l-4]="highlightedDestination === row.directionName"
+            [class.border-l-amber-400]="highlightedDestination === row.directionName"
+            [class.pl-2]="highlightedDestination === row.directionName"
+            tabindex="0"
+            role="button"
+            [attr.aria-label]="'Trein naar ' + row.directionName + ' om ' + (row.departureTime | date:'HH:mm')">
+
+            <div class="flex items-start justify-between gap-2">
+
+              <!-- TIME & DELAY -->
+              <div class="shrink-0 flex flex-col">
+                <span class="font-mono text-base font-bold tracking-tight text-white">
+                  {{ row.departureTime | date:'HH:mm' }}
+                </span>
+
+                @if (row.delayMinutes > 0) {
+                  <span class="mt-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold bg-red-600 text-white w-fit">
+                    +{{ row.delayMinutes }}′
+                  </span>
+                }
+
+                @switch (row.displayStatus) {
+                  @case ('geannuleerd') {
+                    <span class="mt-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold bg-red-700 text-white">
+                      Afgeschaft
+                    </span>
+                  }
+                  @case ('aan perron') {
+                    <span class="text-[10px] text-emerald-300 font-medium">
+                      Aan perron
+                    </span>
+                  }
+                  @case ('komt aan') {
+                    <span class="text-[10px] text-sky-300 font-medium">
+                      Komt aan
+                    </span>
+                  }
+                }
+              </div>
+
+              <!-- DESTINATION & VIA -->
+              <div class="flex-1 min-w-0 px-1">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-amber-300 font-bold text-sm truncate group-hover:text-amber-200">
+                    {{ row.directionName }}
+                  </span>
+
+                  @if (hasMapLocation(row.directionName)) {
+                    <mat-icon
+                      class="!h-3.5 !w-3.5 !text-[14px] text-blue-300 opacity-60 group-hover:opacity-100 shrink-0"
+                      title="Weergegeven op kaart">
+                      place
+                    </mat-icon>
+                  }
+                </div>
+
+                <!-- VIA STOPS -->
+                @if (row.stops && row.stops.length > 0) {
+                  <div class="text-[11px] text-slate-300 truncate mt-0.5">
+                    <span class="text-slate-400">via</span>
+                    @for (stop of row.stops; track stop.station; let last = $last) {
+                      <span> {{ stop.station }}{{ !last ? ',' : '' }}</span>
+                    }
+                  </div>
+                }
+              </div>
+
+              <!-- TRAIN & PLATFORM -->
+              <div class="shrink-0 text-right flex flex-col items-end">
+                @if (row.platform) {
+                  <div class="px-2 py-0.5 rounded bg-white/15 text-white font-bold text-xs">
+                    Spoor {{ row.platform }}
+                  </div>
+                } @else {
+                  <span class="text-slate-400 text-xs">—</span>
+                }
+
+                <span class="text-[10px] font-medium text-slate-300 mt-1">
+                  {{ row.vehicleInfoShortname }}
+                </span>
+              </div>
+
+            </div>
+
+          </div>
+        }
+
+      }
+
     </div>
+
+    <!-- DESKTOP FOOTER / CONNECTION INFO -->
+    <div class="p-3 border-t border-white/10 bg-[#002558] text-[11px] text-slate-300 flex items-center justify-between">
+      <div class="flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>Live NMBS gegevens</span>
+      </div>
+
+      <!-- MOBILE ACTION: TOON KAART BUTTON (BELOW 768px ONLY) -->
+      <button
+        (click)="setMobileView('map')"
+        class="md:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs shadow-md">
+        <mat-icon class="!h-4 !w-4 !text-base">map</mat-icon>
+        Toon kaart
+      </button>
+
+      <span class="hidden md:inline text-slate-400">
+        Klik op een trein om bestemming te markeren
+      </span>
+    </div>
+
+  </div>
 
 </div>
