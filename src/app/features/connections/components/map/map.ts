@@ -29,6 +29,7 @@ export class Map implements AfterViewInit, OnChanges, OnDestroy {
 
   ngAfterViewInit(): void {
     mapboxgl.accessToken = environment.mapboxToken;
+    (mapboxgl as any).workerUrl = '/mapbox-gl-csp-worker.js';
     this.map = new mapboxgl.Map({
       container: this.mapContainer.nativeElement,
       style: 'mapbox://styles/mapbox/streets-v12',

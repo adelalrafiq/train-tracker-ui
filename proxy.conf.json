@@ -1,0 +1,23 @@
+{
+  "/liveboard": {
+    "target": "https://traintracker-1.onrender.com",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/stations": {
+    "target": "https://traintracker-1.onrender.com",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/connections": {
+    "target": "https://traintracker-1.onrender.com",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/liveboardHub": {
+    "target": "https://traintracker-1.onrender.com",
+    "secure": false,
+    "changeOrigin": true,
+    "ws": true
+  }
+}

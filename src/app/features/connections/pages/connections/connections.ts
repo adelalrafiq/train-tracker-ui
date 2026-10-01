@@ -90,7 +90,7 @@ export class Connections {
       }
     }
 
-    return [50.8476, 4.3572];
+    return [4.3572, 50.8476];
   }
 
   get mapZoom(): number {

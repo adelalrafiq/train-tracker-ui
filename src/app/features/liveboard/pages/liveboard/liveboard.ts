@@ -100,8 +100,7 @@ export class Liveboard implements OnInit, OnDestroy {
     try {
       const data = await this.liveboardService.getLiveboard(this.selectedStation);
 
-      this.rows = data?.rows.map((r: any) => ({
-        ...r,
+      this.rows = data?.rows.map((r: any) => Object.assign({}, r, {
         departureTime: new Date(r.departureTime)
       }));
       this.latitude = data.latitude;

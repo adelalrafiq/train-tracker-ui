@@ -2,9 +2,48 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>TrainTrackerUi</title>
+    <title>Train Tracker UI</title>
     <base href="/" />
+    <script>
+      (function() {
+        var defNormalProp = function(obj, key, value) {
+          return key in obj ? Object.defineProperty(obj, key, { enumerable: true, configurable: true, writable: true, value: value }) : obj[key] = value;
+        };
+        var spreadValues = function(a, b) {
+          if (!b) return a;
+          for (var prop in b) {
+            if (Object.prototype.hasOwnProperty.call(b, prop)) defNormalProp(a, prop, b[prop]);
+          }
+          if (Object.getOwnPropertySymbols) {
+            var syms = Object.getOwnPropertySymbols(b);
+            for (var i = 0; i < syms.length; i++) {
+              if (Object.prototype.propertyIsEnumerable.call(b, syms[i])) defNormalProp(a, syms[i], b[syms[i]]);
+            }
+          }
+          return a;
+        };
+        var spreadProps = function(a, b) {
+          return Object.defineProperties(a, Object.getOwnPropertyDescriptors(b));
+        };
+        var g = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof self !== 'undefined' ? self : this;
+        if (g) {
+          g.__spreadValues = spreadValues;
+          g.__spreadProps = spreadProps;
+        }
+        if (typeof window !== 'undefined') {
+          window.__spreadValues = spreadValues;
+          window.__spreadProps = spreadProps;
+        }
+        if (typeof self !== 'undefined') {
+          self.__spreadValues = spreadValues;
+          self.__spreadProps = spreadProps;
+        }
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Real-time Belgian train tracker and liveboard with live departures, connections, and interactive Mapbox route visualization." />
+    <meta property="og:title" content="Train Tracker UI" />
+    <meta property="og:description" content="Real-time Belgian train tracker and liveboard with live departures, connections, and interactive Mapbox route visualization." />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

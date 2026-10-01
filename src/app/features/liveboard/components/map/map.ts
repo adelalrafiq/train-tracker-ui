@@ -35,6 +35,7 @@ export class Map implements AfterViewInit, OnChanges, OnDestroy {
     if (!isPlatformBrowser(this.platformId)) return;
 
     mapboxgl.accessToken = environment.mapboxToken;
+    (mapboxgl as any).workerUrl = '/mapbox-gl-csp-worker.js';
 
     const initialCoords: [number, number] = [
       this.longitude ?? 4.35,

@@ -1,0 +1,7 @@
+{
+  "name": "Train Tracker UI",
+  "description": "Real-time Belgian train tracker and liveboard with live departures, connections, and interactive Mapbox route visualization.",
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

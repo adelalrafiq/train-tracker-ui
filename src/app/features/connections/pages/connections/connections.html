@@ -134,61 +134,76 @@
 
             <!-- TRAINS -->
             <div class="space-y-4">
+                @if (conn.trains && conn.trains.length > 0) {
+                    @for (train of conn.trains; track $index; let idx = $index) {
+                        @if (idx > 0) {
+                        <div class="flex items-center rounded-xl bg-gray-50 px-3 py-2 text-sm text-gray-600">
+                            <mat-icon class="!h-3 !w-3 !text-xs">
+                                swap_horiz
+                            </mat-icon>
+                            <span class="ml-2">
+                                Overstap in
+                                <strong class="ml-1">{{ train.from }}</strong>
+                            </span>
+                        </div>
+                        }
 
-                @for (train of conn.trains; track train; let idx = $index) {
-
-                @if (idx > 0) {
-                <div class="flex items-center rounded-xl bg-gray-50 px-3 py-2 text-sm text-gray-600">
-
-                    <mat-icon class="!h-3 !w-3 !text-xs">
-                        swap_horiz
-                    </mat-icon>
-
-                    <span class="ml-2">
-                        Overstap in
-                        <strong class="ml-1">{{ train.from }}</strong>
-                    </span>
-                </div>
-                }
-
-                <!-- Segment -->
-                <div
-                    class="flex flex-col gap-4 rounded-2xl border border-gray-100 p-4 lg:flex-row lg:items-center lg:justify-between">
-
-                    <div class="flex items-center gap-3">
-
-                        <span class="rounded-lg bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-700">
-                            {{ train.type }}
-                        </span>
-
-                        <span class="font-medium text-gray-700">
-                            {{ train.number }}
-                        </span>
+                        <!-- Segment -->
+                        <div
+                            class="flex flex-col gap-4 rounded-2xl border border-gray-100 p-4 lg:flex-row lg:items-center lg:justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="rounded-lg bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-700">
+                                    {{ train.type || 'Trein' }}
+                                </span>
+                                <span class="font-medium text-gray-700">
+                                    {{ train.number || conn.vehicle }}
+                                </span>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2 text-sm">
+                                <strong>{{ train.departure }}</strong>
+                                <span class="text-gray-400">
+                                    {{ train.from }}
+                                </span>
+                                <mat-icon class="!h-[14px] !w-[14px] !text-[14px] !text-gray-300">
+                                    arrow_forward
+                                </mat-icon>
+                                <strong>{{ train.arrival }}</strong>
+                                <span class="text-gray-400">
+                                    {{ train.to }}
+                                </span>
+                                @if (train.platform) {
+                                <span class="rounded-lg bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
+                                    Perron {{ train.platform }}
+                                </span>
+                                }
+                            </div>
+                        </div>
+                    }
+                } @else {
+                    <div class="flex flex-col gap-4 rounded-2xl border border-gray-100 p-4 lg:flex-row lg:items-center lg:justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="rounded-lg bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-700">
+                                {{ conn.vehicle || 'Trein' }}
+                            </span>
+                            <span class="font-medium text-gray-700">
+                                Directe trein
+                            </span>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2 text-sm">
+                            <strong>{{ conn.departureStation }}</strong>
+                            <span class="text-xs text-gray-400 font-normal">({{ conn.departureTime | date:'HH:mm' }})</span>
+                            <mat-icon class="!h-[14px] !w-[14px] !text-[14px] !text-gray-300">
+                                arrow_forward
+                            </mat-icon>
+                            <strong>{{ conn.arrivalStation }}</strong>
+                            <span class="text-xs text-gray-400 font-normal">({{ conn.arrivalTime | date:'HH:mm' }})</span>
+                            @if (conn.arrivalPlatform) {
+                            <span class="rounded-lg bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
+                                Perron {{ conn.arrivalPlatform }}
+                            </span>
+                            }
+                        </div>
                     </div>
-
-                    <div class="flex flex-wrap items-center gap-2 text-sm">
-
-                        <strong>{{ train.departure }}</strong>
-
-                        <span class="text-gray-400">
-                            {{ train.from }}
-                        </span>
-
-                        <mat-icon class="!h-[14px] !w-[14px] !text-[14px] !text-gray-300">
-                            arrow_forward
-                        </mat-icon>
-
-                        <strong>{{ train.arrival }}</strong>
-
-                        <span class="text-gray-400">
-                            {{ train.to }}
-                        </span>
-
-                        <span class="rounded-lg bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
-                            {{ train.platform }}
-                        </span>
-                    </div>
-                </div>
                 }
             </div>
         </div>
