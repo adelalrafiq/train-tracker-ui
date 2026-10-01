@@ -6,5 +6,5 @@ export const environment = {
         stations: '/stations',
         connections: '/connections'
     },
-    mapboxToken: 'pk.eyJ1IjoiYWRlbGFscmFmaXEiLCJhIjoiY2x4MDEwdmUyMDJ3YTJrczd2YmRvbGc1eiJ9.JUtRj0PX_ZSKzBvt9xagMg'
+    mapboxToken: 'pk.eyJ1IjoiYWRlbGFscmFmaXEiLCJhIjoiY211cHM3NWkxMDN0eDJ4cjR2a2tneTZxYyJ9.bME8qejxp8HoB2ujca_0uw'
 };
