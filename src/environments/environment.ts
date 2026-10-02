@@ -1,7 +1,7 @@
 export const environment = {
     production: false,
     api: {
-        baseUrl: '',
+        baseUrl: 'https://localhost:5000',
         liveboard: '/liveboard',
         stations: '/stations',
         connections: '/connections'
