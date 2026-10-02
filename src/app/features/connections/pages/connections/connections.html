@@ -1,44 +1,36 @@
 <div class="relative w-full h-full overflow-hidden flex flex-col md:flex-row bg-slate-100">
 
   <!-- FULL SCREEN MAP (BEHIND/BESIDE PANEL) -->
-  <div class="absolute inset-0 w-full h-full z-0"
-       [class.hidden]="mobileView === 'list'"
-       [class.block]="true"
-       [class.md:block]="true">
-    <app-map
-      [center]="mapCenter"
-      [zoom]="mapZoom"
-      [markers]="mapMarkers"
-      [line]="mapLine"
-      [distanceText]="calculatedDistance"
-      [isMobileMode]="mobileView === 'map'">
+  <div class="absolute inset-0 w-full h-full z-0" [class.hidden]="mobileView === 'list'" [class.block]="true"
+    [class.md:block]="true">
+    <app-map [center]="mapCenter" [zoom]="mapZoom" [markers]="mapMarkers" [line]="mapLine"
+      [distanceText]="calculatedDistance" [isMobileMode]="mobileView === 'map'">
     </app-map>
 
     <!-- MOBILE FLOATING CONTROLS (ONLY IN MOBILE MAP MODE) -->
     @if (mobileView === 'map') {
-      <div class="md:hidden absolute top-4 left-4 right-4 z-20 flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md p-3 rounded-2xl shadow-xl text-slate-800 border border-slate-200">
-        <button
-          (click)="setMobileView('list')"
-          class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-xs font-semibold text-slate-700 transition-colors">
-          <mat-icon class="!h-4 !w-4 !text-base">arrow_back</mat-icon>
-          Terug naar resultaten
-        </button>
+    <div
+      class="md:hidden absolute top-4 left-4 right-4 z-20 flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md p-3 rounded-2xl shadow-xl text-slate-800 border border-slate-200">
+      <button (click)="setMobileView('list')"
+        class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-xs font-semibold text-slate-700 transition-colors">
+        <mat-icon class="!h-4 !w-4 !text-base">arrow_back</mat-icon>
+        Terug naar resultaten
+      </button>
 
-        @if (calculatedDistance) {
-          <div class="text-right">
-            <div class="text-[10px] text-slate-500 uppercase font-semibold">Afstand (hemelsbreed)</div>
-            <div class="text-xs font-bold text-blue-900">{{ calculatedDistance }}</div>
-          </div>
-        }
+      @if (calculatedDistance) {
+      <div class="text-right">
+        <div class="text-[10px] text-slate-500 uppercase font-semibold">Afstand (hemelsbreed)</div>
+        <div class="text-xs font-bold text-blue-900">{{ calculatedDistance }}</div>
       </div>
+      }
+    </div>
     }
   </div>
 
   <!-- LEFT PANEL: SEARCH & RESULTS (DESKTOP STICKY SIDEBAR / MOBILE FULL LIST) -->
-  <div class="w-full md:w-[390px] lg:w-[420px] shrink-0 h-full z-10 flex flex-col bg-white/95 backdrop-blur-md border-r border-slate-200 shadow-2xl relative"
-       [class.hidden]="mobileView === 'map'"
-       [class.flex]="true"
-       [class.md:flex]="true">
+  <div
+    class="w-full md:w-[390px] lg:w-[420px] shrink-0 h-full z-10 flex flex-col bg-white/95 backdrop-blur-md border-r border-slate-200 shadow-2xl relative"
+    [class.hidden]="mobileView === 'map'" [class.flex]="true" [class.md:flex]="true">
 
     <!-- SEARCH PANEL HEADER -->
     <div class="p-4 border-b border-slate-200 bg-white flex flex-col gap-3 shrink-0">
@@ -49,69 +41,58 @@
         </div>
 
         @if ((selectedFrom$ | async) && (selectedTo$ | async)) {
-          <button
-            (click)="swapStations()"
-            class="p-1.5 rounded-lg hover:bg-slate-100 active:bg-slate-200 text-slate-500 hover:text-blue-900 transition-colors"
-            title="Wissel vertrek en aankomst"
-            aria-label="Wissel vertrek en aankomst">
-            <mat-icon class="!h-4 !w-4 !text-base">swap_vert</mat-icon>
-          </button>
+        <button (click)="swapStations()"
+          class="p-1.5 rounded-lg hover:bg-slate-100 active:bg-slate-200 text-slate-500 hover:text-blue-900 transition-colors"
+          title="Wissel vertrek en aankomst" aria-label="Wissel vertrek en aankomst">
+          <mat-icon class="!h-4 !w-4 !text-base">swap_vert</mat-icon>
+        </button>
         }
       </div>
 
       <!-- FROM & TO INPUTS -->
       <div class="flex flex-col gap-2">
         <div class="relative">
-          <app-autocomplete
-            label="Van"
-            icon="trip_origin"
-            placeholder="Vertrekstation"
-            [initialValue]="(selectedFrom$ | async) || ''"
-            (stationSelected)="setFromStation($event)">
+          <app-autocomplete label="Van" icon="trip_origin" placeholder="Vertrekstation"
+            [initialValue]="(selectedFrom$ | async) || ''" (stationSelected)="setFromStation($event)">
           </app-autocomplete>
         </div>
 
         <div class="relative">
-          <app-autocomplete
-            label="Naar"
-            icon="place"
-            placeholder="Aankomststation"
-            [initialValue]="(selectedTo$ | async) || ''"
-            (stationSelected)="setToStation($event)">
+          <app-autocomplete label="Naar" icon="place" placeholder="Aankomststation"
+            [initialValue]="(selectedTo$ | async) || ''" (stationSelected)="setToStation($event)">
           </app-autocomplete>
         </div>
       </div>
 
       <!-- SEARCH BUTTON -->
-      <button
-        mat-flat-button
+      <button mat-flat-button
         class="!h-11 !rounded-xl !bg-[#003082] !text-white !font-semibold !shadow-sm hover:!bg-[#002566] transition-colors"
-        [disabled]="!(selectedFrom$ | async) || !(selectedTo$ | async) || (loading$ | async)"
-        (click)="search()">
+        [disabled]="!(selectedFrom$ | async) || !(selectedTo$ | async) || (loading$ | async)" (click)="search()">
         @if (loading$ | async) {
-          <div class="flex items-center justify-center gap-2">
-            <mat-spinner diameter="18" strokeWidth="2"></mat-spinner>
-            <span>Verbindingen zoeken...</span>
-          </div>
+        <div class="flex items-center justify-center gap-2">
+          <mat-spinner diameter="18" strokeWidth="2"></mat-spinner>
+          <span>Verbindingen zoeken...</span>
+        </div>
         } @else {
-          <div class="flex items-center justify-center gap-1.5">
-            <mat-icon class="!h-4 !w-4 !text-base">search</mat-icon>
-            <span>Zoeken</span>
-          </div>
+        <div class="flex items-center justify-center gap-1.5">
+          <mat-icon class="!h-4 !w-4 !text-base">search</mat-icon>
+          <span>Zoeken</span>
+        </div>
         }
       </button>
 
       <!-- DISTANCE & ROUTE SUMMARY CARD -->
       @if (calculatedDistance && (selectedFrom$ | async) && (selectedTo$ | async)) {
-        <div class="mt-1 p-3 rounded-xl bg-blue-50/80 border border-blue-100 flex items-center justify-between text-xs text-blue-950">
-          <div class="min-w-0 pr-2">
-            <div class="font-semibold truncate">{{ selectedFrom$ | async }} → {{ selectedTo$ | async }}</div>
-            <div class="text-[11px] text-blue-700 mt-0.5">Geografische afstand (hemelsbreed)</div>
-          </div>
-          <div class="text-right shrink-0">
-            <div class="text-sm font-extrabold text-[#003082]">{{ calculatedDistance }}</div>
-          </div>
+      <div
+        class="mt-1 p-3 rounded-xl bg-blue-50/80 border border-blue-100 flex items-center justify-between text-xs text-blue-950">
+        <div class="min-w-0 pr-2">
+          <div class="font-semibold truncate">{{ selectedFrom$ | async }} → {{ selectedTo$ | async }}</div>
+          <div class="text-[11px] text-blue-700 mt-0.5">Geografische afstand (hemelsbreed)</div>
         </div>
+        <div class="text-right shrink-0">
+          <div class="text-sm font-extrabold text-[#003082]">{{ calculatedDistance }}</div>
+        </div>
+      </div>
       }
     </div>
 
@@ -120,120 +101,144 @@
 
       @let connections = (connections$ | async);
       @if (loading$ | async) {
-        <div class="p-10 flex flex-col items-center justify-center gap-3 text-slate-500">
-          <mat-spinner diameter="36"></mat-spinner>
-          <span class="text-xs font-medium">Dienstregeling opvragen...</span>
-        </div>
+      <div class="p-10 flex flex-col items-center justify-center gap-3 text-slate-500">
+        <mat-spinner diameter="36"></mat-spinner>
+        <span class="text-xs font-medium">Dienstregeling opvragen...</span>
+      </div>
       } @else if (connections?.length) {
 
-        @for (conn of connections; track conn.id || $index) {
-          <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
+      @for (conn of connections; track conn.id || $index) {
+      <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
 
-            <!-- CONNECTION HEADER (TIMES, PLATFORMS, DURATION) -->
-            <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-3">
+        <!-- CONNECTION HEADER (TIMES, PLATFORMS, DURATION) -->
+        <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-3">
 
-              <!-- DEPARTURE -->
-              <div class="text-left">
-                <div class="text-xl font-extrabold text-slate-900 leading-none">
-                  {{ conn.departureTime | date:'HH:mm' }}
-                </div>
-                <div class="text-[11px] text-slate-500 font-medium mt-1 truncate max-w-[90px]">
-                  {{ conn.departureStation }}
-                </div>
-                @if (conn.departurePlatform) {
-                  <div class="text-[10px] text-slate-600 font-semibold mt-0.5">
-                    Spoor {{ conn.departurePlatform }}
-                  </div>
-                }
-              </div>
-
-              <!-- DURATION & ARROW -->
-              <div class="flex flex-col items-center px-1">
-                <div class="flex items-center gap-1 text-[11px] font-semibold text-slate-500">
-                  <mat-icon class="!h-3.5 !w-3.5 !text-[14px]">schedule</mat-icon>
-                  <span>{{ formatDuration(conn.duration) }}</span>
-                </div>
-                <div class="flex items-center gap-1 my-1">
-                  <div class="w-5 h-px bg-slate-300"></div>
-                  <mat-icon class="!h-3 !w-3 !text-xs text-blue-700">arrow_forward</mat-icon>
-                  <div class="w-5 h-px bg-slate-300"></div>
-                </div>
-                <div class="text-[10px] text-slate-400">
-                  {{ conn.transfers === 0 ? 'Direct' : conn.transfers + ' overstap' }}
-                </div>
-              </div>
-
-              <!-- ARRIVAL -->
-              <div class="text-right">
-                <div class="text-xl font-extrabold text-slate-900 leading-none">
-                  {{ conn.arrivalTime | date:'HH:mm' }}
-                </div>
-                <div class="text-[11px] text-slate-500 font-medium mt-1 truncate max-w-[90px]">
-                  {{ conn.arrivalStation }}
-                </div>
-                @if (conn.arrivalPlatform) {
-                  <div class="text-[10px] text-slate-600 font-semibold mt-0.5">
-                    Spoor {{ conn.arrivalPlatform }}
-                  </div>
-                }
-              </div>
-
+          <!-- DEPARTURE -->
+          <div class="text-left">
+            <div class="text-xl font-extrabold text-slate-900 leading-none">
+              {{ conn.departureTime | date:'HH:mm' }}
             </div>
-
-            <!-- TRAIN SEGMENTS / DETAILS -->
-            <div class="pt-3">
-              @if (conn.trains && conn.trains.length > 0) {
-                @for (train of conn.trains; track $index; let idx = $index) {
-                  @if (idx > 0) {
-                    <div class="my-2 flex items-center gap-1.5 rounded-lg bg-amber-50 px-2 py-1 text-[11px] font-semibold text-amber-800">
-                      <mat-icon class="!h-3.5 !w-3.5 !text-sm">swap_horiz</mat-icon>
-                      <span>Overstap in {{ train.from }}</span>
-                    </div>
-                  }
-
-                  <div class="flex items-center justify-between text-xs py-1">
-                    <div class="flex items-center gap-2">
-                      <span class="px-2 py-0.5 rounded-md bg-blue-100 text-blue-800 font-bold text-[11px]">
-                        {{ train.type || 'Trein' }}
-                      </span>
-                      <span class="font-medium text-slate-700">
-                        {{ train.number || conn.vehicle }}
-                      </span>
-                    </div>
-                    <div class="text-slate-500 text-[11px]">
-                      {{ train.departure }} → {{ train.arrival }}
-                    </div>
-                  </div>
-                }
-              } @else {
-                <div class="flex items-center justify-between text-xs py-1">
-                  <div class="flex items-center gap-2">
-                    <span class="px-2 py-0.5 rounded-md bg-blue-100 text-blue-800 font-bold text-[11px]">
-                      {{ conn.vehicle || 'Direct' }}
-                    </span>
-                    <span class="font-medium text-slate-700">
-                      Directe trein
-                    </span>
-                  </div>
-                  <div class="text-slate-500 text-[11px]">
-                    {{ conn.departureTime | date:'HH:mm' }} → {{ conn.arrivalTime | date:'HH:mm' }}
-                  </div>
-                </div>
-              }
+            <div class="text-[11px] text-slate-500 font-medium mt-1 truncate max-w-[90px]">
+              {{ conn.departureStation }}
             </div>
-
+            @if (conn.departurePlatform) {
+            <div class="text-[10px] text-slate-600 font-semibold mt-0.5">
+              Spoor {{ conn.departurePlatform }}
+            </div>
+            }
           </div>
-        }
+
+          <!-- DURATION & ARROW -->
+          <div class="flex flex-col items-center px-1">
+            <div class="flex items-center gap-1 text-[11px] font-semibold text-slate-500">
+              <mat-icon class="!h-3.5 !w-3.5 !text-[14px]">schedule</mat-icon>
+              <span>{{ formatDuration(conn.duration) }}</span>
+            </div>
+            <div class="flex items-center gap-1 my-1">
+              <div class="w-5 h-px bg-slate-300"></div>
+              <mat-icon class="!h-3 !w-3 !text-xs text-blue-700">arrow_forward</mat-icon>
+              <div class="w-5 h-px bg-slate-300"></div>
+            </div>
+            <div class="text-[10px] text-slate-400">
+              {{ conn.transfers === 0 ? 'Direct' : (conn.transfers === 1 ? '1 overstap' : conn.transfers + '
+              overstappen') }}
+            </div>
+          </div>
+
+          <!-- ARRIVAL -->
+          <div class="text-right">
+            <div class="text-xl font-extrabold text-slate-900 leading-none">
+              {{ conn.arrivalTime | date:'HH:mm' }}
+            </div>
+            <div class="text-[11px] text-slate-500 font-medium mt-1 truncate max-w-[90px]">
+              {{ conn.arrivalStation }}
+            </div>
+            @if (conn.arrivalPlatform) {
+            <div class="text-[10px] text-slate-600 font-semibold mt-0.5">
+              Spoor {{ conn.arrivalPlatform }}
+            </div>
+            }
+          </div>
+
+        </div>
+
+        <!-- TRAIN SEGMENTS / DETAILS -->
+        <div class="pt-3">
+          @if (!conn.isDirect && conn.transfers > 0) {
+          @if (conn.trains && conn.trains.length > 1) {
+          @for (train of conn.trains; track $index; let idx = $index) {
+          @if (idx > 0) {
+          <div
+            class="my-2 flex items-center gap-1.5 rounded-lg bg-amber-50 px-2 py-1 text-[11px] font-semibold text-amber-800">
+            <mat-icon class="!h-3.5 !w-3.5 !text-sm">swap_horiz</mat-icon>
+            <span>Overstap in {{ train.from }}</span>
+          </div>
+          }
+
+          <div class="flex items-center justify-between text-xs py-1">
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded-md bg-blue-100 text-blue-800 font-bold text-[11px]">
+                {{ train.type || 'Trein' }}
+              </span>
+              <span class="font-medium text-slate-700">
+                {{ train.number || (idx === 0 ? (conn.vehicle || 'Trein') : 'Aansluitende trein') }}
+              </span>
+            </div>
+            <div class="text-slate-500 text-[11px]">
+              {{ train.from }} → {{ train.to }}
+            </div>
+          </div>
+          }
+          } @else {
+          <div
+            class="my-2 flex items-center gap-1.5 rounded-lg bg-amber-50 px-2 py-1 text-[11px] font-semibold text-amber-800">
+            <mat-icon class="!h-3.5 !w-3.5 !text-sm">swap_horiz</mat-icon>
+            <span>{{ conn.transferStation ? ('Overstap in ' + conn.transferStation) : conn.transferSummary }}</span>
+          </div>
+          <div class="flex items-center justify-between text-xs py-1">
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded-md bg-blue-100 text-blue-800 font-bold text-[11px]">
+                {{ conn.vehicle || 'Trein' }}
+              </span>
+              <span class="font-medium text-slate-700">
+                Met overstap ({{ conn.transferSummary }})
+              </span>
+            </div>
+            <div class="text-slate-500 text-[11px]">
+              {{ conn.departureTime | date:'HH:mm' }} → {{ conn.arrivalTime | date:'HH:mm' }}
+            </div>
+          </div>
+          }
+          } @else {
+          <div class="flex items-center justify-between text-xs py-1">
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 font-bold text-[11px]">
+                {{ conn.vehicle || 'Direct' }}
+              </span>
+              <span class="font-medium text-slate-700">
+                Directe trein
+              </span>
+            </div>
+            <div class="text-slate-500 text-[11px]">
+              {{ conn.departureTime | date:'HH:mm' }} → {{ conn.arrivalTime | date:'HH:mm' }}
+            </div>
+          </div>
+          }
+        </div>
+
+      </div>
+      }
 
       } @else {
-        <!-- EMPTY / INITIAL STATE -->
-        <div class="p-8 rounded-2xl bg-white border border-slate-200 text-center text-slate-500 flex flex-col items-center gap-2 shadow-sm">
-          <mat-icon class="!h-10 !w-10 !text-3xl text-slate-300">route</mat-icon>
-          <p class="text-sm font-semibold text-slate-700">Geen verbindingen getoond</p>
-          <p class="text-xs text-slate-400">
-            Selecteer een vertrek- en aankomststation en klik op <strong>Zoeken</strong>.
-          </p>
-        </div>
+      <!-- EMPTY / INITIAL STATE -->
+      <div
+        class="p-8 rounded-2xl bg-white border border-slate-200 text-center text-slate-500 flex flex-col items-center gap-2 shadow-sm">
+        <mat-icon class="!h-10 !w-10 !text-3xl text-slate-300">route</mat-icon>
+        <p class="text-sm font-semibold text-slate-700">Geen verbindingen getoond</p>
+        <p class="text-xs text-slate-400">
+          Selecteer een vertrek- en aankomststation en klik op <strong>Zoeken</strong>.
+        </p>
+      </div>
       }
 
     </div>
@@ -246,8 +251,7 @@
       </div>
 
       <!-- MOBILE ACTION: TOON KAART BUTTON (BELOW 768px ONLY) -->
-      <button
-        (click)="setMobileView('map')"
+      <button (click)="setMobileView('map')"
         class="md:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#003082] hover:bg-[#002566] text-white font-semibold text-xs shadow-md">
         <mat-icon class="!h-4 !w-4 !text-base">map</mat-icon>
         Toon kaart

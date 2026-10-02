@@ -7,7 +7,7 @@ import {
 import { BehaviorSubject } from 'rxjs';
 import { ConnectionsService } from '../../services/connections-service';
 import { Autocomplete } from '../../../../shared/components/autocomplete/autocomplete';
-import { MapMarker, MapLine, ConnectionDto } from '../../models/connectionsModel';
+import { MapMarker, MapLine, ConnectionItem } from '../../models/connectionsModel';
 import { Map } from '../../components/map/map';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -103,7 +103,7 @@ export class Connections implements OnInit {
     this.connectionsService.searchConnections(from, to);
   }
 
-  private computeDistanceAndCoordinates(connections: ConnectionDto[]): void {
+  private computeDistanceAndCoordinates(connections: ConnectionItem[]): void {
     if (!connections || !connections.length) {
       this.recalculateDistancePreview();
       return;
@@ -207,6 +207,18 @@ export class Connections implements OnInit {
           lngLat: [c.departureLocation.lng, c.departureLocation.lat],
           label: c.departureStation
         });
+
+        // If transfer station exists, add marker for it
+        if (!c.isDirect && c.transferStation) {
+          const tfCoord = this.stationCoordinatesService.getCoordinates(c.transferStation);
+          if (tfCoord) {
+            markers.push({
+              lngLat: [tfCoord.lng, tfCoord.lat],
+              label: `Overstap: ${c.transferStation}`
+            });
+          }
+        }
+
         markers.push({
           lngLat: [c.arrivalLocation.lng, c.arrivalLocation.lat],
           label: c.arrivalStation

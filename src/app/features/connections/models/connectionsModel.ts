@@ -2,6 +2,10 @@ export interface StationLocation {
     lat: number;
     lng: number;
 }
+
+/**
+ * Raw DTO directly returned by the TrainTracker backend API (/Connections)
+ */
 export interface ConnectionDto {
     id: number;
     departureStation: string;
@@ -10,12 +14,12 @@ export interface ConnectionDto {
     arrivalLocation: StationLocation;
     departureTime: string;
     arrivalTime: string;
+    departureDelay?: number;
+    arrivalDelay?: number;
     duration: number;
-    vehicle: string;
-    departurePlatform: string;
-    arrivalPlatform: string;
-    transfers: number;
-    trains: any[];
+    vehicle: string | null;
+    departurePlatform: string | null;
+    arrivalPlatform: string | null;
 }
 
 export interface StationCoord {
@@ -41,15 +45,30 @@ export interface TrainSegment {
     to: string;
     departure: string;
     arrival: string;
-    platform: string;
+    platform?: string | null;
 }
 
-export interface Connection {
-    id: string;
+/**
+ * Enriched connection model used by the UI and map with accurate transfer detection
+ */
+export interface ConnectionItem {
+    id: number;
+    departureStation: string;
+    departureLocation: StationLocation;
+    arrivalStation: string;
+    arrivalLocation: StationLocation;
     departureTime: string;
     arrivalTime: string;
-    duration: string;
+    departureDelay: number;
+    arrivalDelay: number;
+    duration: number;
+    vehicle: string;
+    departurePlatform: string | null;
+    arrivalPlatform: string | null;
+    isDirect: boolean;
     transfers: number;
+    transferStation: string | null;
+    transferSummary: string;
     trains: TrainSegment[];
 }
 

@@ -4,6 +4,7 @@ export interface LiveboardRow {
     displayStatus: string;
     platform: string;
     vehicleInfoShortname: string;
+    vehicleId?: string | null;
     delayMinutes: number;
     status: number;
     stops: StopDto[];
