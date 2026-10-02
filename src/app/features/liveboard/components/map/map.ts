@@ -15,6 +15,7 @@ import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import mapboxgl from 'mapbox-gl';
 import { environment } from '../../../../../environments/environment';
+import { enableMapboxRailwayLayers } from '../../../../shared/utils/mapbox-railway';
 
 export interface LiveboardDestinationOnMap {
   name: string;
@@ -73,6 +74,7 @@ export class Map implements AfterViewInit, OnChanges, OnDestroy {
 
     this.map.on('load', () => {
       this.isMapLoaded = true;
+      enableMapboxRailwayLayers(this.map!);
       this.setupConnectionLayers();
       this.renderOriginMarker();
       this.renderDestinations();

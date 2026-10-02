@@ -14,6 +14,7 @@ import { PLATFORM_ID } from '@angular/core';
 import mapboxgl from 'mapbox-gl';
 import { environment } from '../../../../../environments/environment';
 import { MapLine, MapMarker } from '../../models/connectionsModel';
+import { enableMapboxRailwayLayers } from '../../../../shared/utils/mapbox-railway';
 
 @Component({
   selector: 'app-map',
@@ -54,6 +55,7 @@ export class Map implements AfterViewInit, OnChanges, OnDestroy {
 
     this.map.on('load', () => {
       this.isMapLoaded = true;
+      enableMapboxRailwayLayers(this.map!);
       this.setupLayers();
       this.renderMarkers();
       this.renderLine();
